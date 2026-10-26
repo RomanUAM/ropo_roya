@@ -1,0 +1,8 @@
+{
+  "columna": "Incidencia de roya del Café",
+  "unidad": "porcentaje_de_incidencia",
+  "confirmacion_usuario": "2026-10-26",
+  "rango_operativo_solicitado": [0, 40],
+  "respuesta_original_intacta": true,
+  "PIG": "Sólo porcentajes enteros, distribución truncada de puntos porcentuales; no asumir número de hojas ni denominador."
+}

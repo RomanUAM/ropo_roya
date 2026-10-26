@@ -8,9 +8,47 @@ def main():
     train=sub.add_parser('entrenar');train.add_argument('--config');train.add_argument('--out')
     verify=sub.add_parser('verificar');verify.add_argument('--out',default='runs/calendario_r2')
     report=sub.add_parser('informe');report.add_argument('--out',default='runs/calendario_r2')
+    stack=sub.add_parser('entrenar-acp-probabilidades');stack.add_argument('--config');stack.add_argument('--out')
+    neural=sub.add_parser('entrenar-tres-redes');neural.add_argument('--config');neural.add_argument('--out')
+    sub.add_parser('entrenar-fusion-modal');sub.add_parser('analizar-fusion-modal')
+    modal=sub.add_parser('predecir-fusion-modal');modal.add_argument('input');modal.add_argument('output');modal.add_argument('--presencia-confirmada',action='store_true')
+    sub.add_parser('entrenar-avanzado');sub.add_parser('verificar-avanzado');sub.add_parser('informe-avanzado')
+    advanced=sub.add_parser('predecir-avanzado');advanced.add_argument('input');advanced.add_argument('output');advanced.add_argument('--ruta',choices=['tres_redes','acp_probabilidades'],default='tres_redes');advanced.add_argument('--fusion');advanced.add_argument('--arquitectura',default='LR');advanced.add_argument('--metodo')
     pred=sub.add_parser('predecir');pred.add_argument('input');pred.add_argument('output');pred.add_argument('--representacion',choices=['completas','ACP'],default='completas');pred.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF');pred.add_argument('--metodo');pred.add_argument('--estocastico',action='store_true');pred.add_argument('--seed',type=int,default=42);pred.add_argument('--out',default='runs/calendario_r2')
     args=parser.parse_args()
-    if args.action=='entrenar':
+    if args.action=='entrenar-fusion-modal':
+        from roya.orquestador import run_fusion_modal
+        run_fusion_modal()
+    elif args.action=='analizar-fusion-modal':
+        from roya.analisis_modal import run
+        run()
+    elif args.action=='predecir-fusion-modal':
+        from roya.fusion_modal import predict
+        predict(pd.read_csv(args.input),apply_presence_gate=not args.presencia_confirmada).to_csv(args.output,index=False)
+    elif args.action=='entrenar-avanzado':
+        from roya.orquestador import run_avanzado
+        print(json.dumps(run_avanzado(),ensure_ascii=False,indent=2))
+    elif args.action=='verificar-avanzado':
+        from roya.verificar_avanzado import run
+        print(json.dumps(run(),ensure_ascii=False,indent=2))
+    elif args.action=='informe-avanzado':
+        from roya.informe_avanzado import run
+        run()
+    elif args.action=='entrenar-acp-probabilidades':
+        from roya.acp_probabilidades import run
+        print(json.dumps(run(args.config,args.out)['seleccion'],ensure_ascii=False,indent=2))
+    elif args.action=='entrenar-tres-redes':
+        from roya.tres_redes import run
+        print(json.dumps(run(args.config,args.out)['seleccion'],ensure_ascii=False,indent=2))
+    elif args.action=='predecir-avanzado':
+        if args.ruta=='tres_redes':
+            from roya.tres_redes import predict
+            result=predict(pd.read_csv(args.input),args.fusion)
+        else:
+            from roya.acp_probabilidades import predict
+            result=predict(pd.read_csv(args.input),args.arquitectura,args.metodo)
+        result.to_csv(args.output,index=False)
+    elif args.action=='entrenar':
         from roya.orquestador import run
         print(json.dumps(run(args.config,args.out)['seleccion'],ensure_ascii=False,indent=2))
     elif args.action=='verificar':

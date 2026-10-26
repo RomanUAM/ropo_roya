@@ -1,0 +1,60 @@
+{
+  "huella": {
+    "config": {
+      "experiment": "acp_probabilidades_regresion_v1",
+      "families": [
+        "RF",
+        "LR",
+        "GP",
+        "MIXTA"
+      ],
+      "methods": [
+        "lineal_multiple",
+        "log1p_lineal",
+        "polinomio_2",
+        "polinomio_3",
+        "armonica_multiple",
+        "genetica_regresion"
+      ],
+      "ridge_alphas": [
+        0.1,
+        10.0,
+        1000.0,
+        10000.0
+      ],
+      "gp_seeds": [
+        42,
+        43,
+        44
+      ],
+      "gp_population": 256,
+      "gp_generations": 60,
+      "uniform_half_width": 0.021834988
+    },
+    "sources": {
+      "geografia_roya/base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+      "barreras_naturales/analisis/relieve_y_estructuras_por_sitio.csv": "6666bc791cb16687e39a3db220d91a7c2e9e7bc0be6df4b117ac7592e6ec51b9"
+    },
+    "clases_fuentes": {
+      "LR.joblib": "4334d65ce5262526c09167a8b110324f90e6007f80bce85a1b4458eeaad9a62b",
+      "cantidad.joblib": "433288fb73c6a32ebf9a648b6528f1a214e362c3a5548bc82721c88e1f99250d",
+      "GP.joblib": "00c8e825922e702751252b22eef766dfb3a9673f57b546ab569e3d0197795ba2",
+      "MIXTA.joblib": "aa9b7839eba0c6b28b79dc22955c111485cf26ceec6e622841c5e0d1a4fc993d",
+      "RF.joblib": "b87fcc56e97a249f44df2e0a7189d8cc29d69452f020276db7c826b7410b95cc"
+    },
+    "OOF": {
+      "OOF_LR.csv": "fbb0566a93ea31c8ff4b3cfc3e518e62fc5fe9bb845878bafad08cd43a2df9d1",
+      "OOF_RF.csv": "0d729cdaaa9f9b7d922f8609943c7141eb0e1e5a4b6374eecc9560858efab9d3",
+      "OOF_GP.csv": "dad651bad9e098276d28c128c6a9d27ac3468bbe9958c61961d93ff255accd81"
+    }
+  },
+  "n_train_positivos": 11900,
+  "particion": "Mismo50/20/30 porcoordenadas; clasificadoresACPcongelados.",
+  "probabilidades": "Tres salidas base; filas train sóloOOF de5folds porcoordenada. Validación/prueba con modelos ajustados sólo train.",
+  "coordinador": "BNNconserva puerta; su probabilidad no entra a regresores porque faltaOOFanidado de ese nivel.",
+  "transformacion": "Continuas estandarizadas yACP95% sólo11900positivos train. Probabilidades estandarizadas aparte; indicadores/categorías/calendario auxiliares comunes.",
+  "armonicas": "Dos armónicos anuales y sus interacciones con cadaPC/probabilidad; polinomios completos de[PC,p] con interacciones.",
+  "GP": "Regresor simbólicoMSE, árbol3niveles+escalaafín train; no confundir conGPclasificador.",
+  "seleccion": "MáximoR2esperado uniforme de validación, sin elegir realizaciones de ruido; prueba sólo después de congelar.",
+  "limites": "Prueba histórica reutilizada; comunidades transductivas de train conservadas; falta nueva cohorte. No interpretar como validación prospectiva."
+}

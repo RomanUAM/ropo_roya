@@ -1,0 +1,11 @@
+{
+  "experiment": "tres_redes_GAM_poly_PIG_100neg_v1",
+  "classifier_family": "LR",
+  "max_negatives": 100,
+  "seed": 42,
+  "epochs": 80,
+  "networks": [[36, 18], [6, 9, 18, 36], [10, 5, 10, 5, 10, 5]],
+  "fusion_alphas": [0.0001, 0.01, 0.1],
+  "gam_knots": [4, 6, 8],
+  "pig_alphas": [0.0001, 0.01]
+}

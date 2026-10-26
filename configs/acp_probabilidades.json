@@ -1,0 +1,10 @@
+{
+  "experiment": "acp_probabilidades_regresion_v1",
+  "families": ["RF", "LR", "GP", "MIXTA"],
+  "methods": ["lineal_multiple", "log1p_lineal", "polinomio_2", "polinomio_3", "armonica_multiple", "genetica_regresion"],
+  "ridge_alphas": [0.1, 10.0, 1000.0, 10000.0],
+  "gp_seeds": [42, 43, 44],
+  "gp_population": 256,
+  "gp_generations": 60,
+  "uniform_half_width": 0.021834988
+}

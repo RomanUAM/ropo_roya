@@ -1,0 +1,55 @@
+{
+  "config": {
+    "experiment": "tres_redes_GAM_poly_PIG_100neg_v1",
+    "classifier_family": "LR",
+    "max_negatives": 100,
+    "seed": 42,
+    "epochs": 80,
+    "networks": [
+      [
+        36,
+        18
+      ],
+      [
+        6,
+        9,
+        18,
+        36
+      ],
+      [
+        10,
+        5,
+        10,
+        5,
+        10,
+        5
+      ]
+    ],
+    "fusion_alphas": [
+      0.0001,
+      0.01,
+      0.1
+    ],
+    "gam_knots": [
+      4,
+      6,
+      8
+    ],
+    "pig_alphas": [
+      0.0001,
+      0.01
+    ]
+  },
+  "unidad": "Porcentaje de incidencia; rango operativo0..40puntosporcentuales",
+  "n_train_positivos": 11900,
+  "n_train_negativos": 100,
+  "fuentes": {
+    "base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+    "relieve_y_estructuras_por_sitio.csv": "6666bc791cb16687e39a3db220d91a7c2e9e7bc0be6df4b117ac7592e6ec51b9"
+  },
+  "particion": "Mismo50/20/30porcoordenadas.100negativos sólo en train; validación/prueba completas e inalteradas.",
+  "entradas": "Tres redes reciben las mismasACP95%+3probabilidades baseOOF e indicadores/calendario. Normalización ajustada porfold.",
+  "OOF": "Cincofolds de redes porcoordenada. Probabilidades base históricasOOF. No es validación anidada completa de todas las etapas históricas.",
+  "PIG": "Modelo exploratorio para porcentajes ENTEROS, como puntos porcentuales discretos; mezclaPoisson–IG truncada0..40, no conteo de hojas ni denominador conocido.",
+  "limites": "Reducir ceros cambia prevalencia; no garantiza eliminarFP. Día1/16aproximado, ceros históricos pendientes y prueba reutilizada."
+}

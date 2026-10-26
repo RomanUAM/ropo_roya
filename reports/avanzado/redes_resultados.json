@@ -1,0 +1,296 @@
+{
+  "protocolo": {
+    "config": {
+      "experiment": "tres_redes_GAM_poly_PIG_100neg_v1",
+      "classifier_family": "LR",
+      "max_negatives": 100,
+      "seed": 42,
+      "epochs": 80,
+      "networks": [
+        [
+          36,
+          18
+        ],
+        [
+          6,
+          9,
+          18,
+          36
+        ],
+        [
+          10,
+          5,
+          10,
+          5,
+          10,
+          5
+        ]
+      ],
+      "fusion_alphas": [
+        0.0001,
+        0.01,
+        0.1
+      ],
+      "gam_knots": [
+        4,
+        6,
+        8
+      ],
+      "pig_alphas": [
+        0.0001,
+        0.01
+      ]
+    },
+    "unidad": "Porcentaje de incidencia; rango operativo0..40puntosporcentuales",
+    "n_train_positivos": 11900,
+    "n_train_negativos": 100,
+    "fuentes": {
+      "base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+      "relieve_y_estructuras_por_sitio.csv": "6666bc791cb16687e39a3db220d91a7c2e9e7bc0be6df4b117ac7592e6ec51b9"
+    },
+    "particion": "Mismo50/20/30porcoordenadas.100negativos sólo en train; validación/prueba completas e inalteradas.",
+    "entradas": "Tres redes reciben las mismasACP95%+3probabilidades baseOOF e indicadores/calendario. Normalización ajustada porfold.",
+    "OOF": "Cincofolds de redes porcoordenada. Probabilidades base históricasOOF. No es validación anidada completa de todas las etapas históricas.",
+    "PIG": "Modelo exploratorio para porcentajes ENTEROS, como puntos porcentuales discretos; mezclaPoisson–IG truncada0..40, no conteo de hojas ni denominador conocido.",
+    "limites": "Reducir ceros cambia prevalencia; no garantiza eliminarFP. Día1/16aproximado, ceros históricos pendientes y prueba reutilizada."
+  },
+  "seleccion": {
+    "mejor": {
+      "fusion": "Poisson_IG_truncada",
+      "alpha": 0.01,
+      "conjunto": "validacion",
+      "R2": 0.2604466841886741,
+      "R2_esperado_uniforme": 0.2604466841886741,
+      "MAE": 2.7533768121751616,
+      "RMSE": 4.694802999499597,
+      "RMSE_esperado_uniforme": 4.694802999499597,
+      "R2_positivos_reales": 0.038018225827434526,
+      "MAE_positivos_reales": 5.200534070646285,
+      "MAE_TP": 5.185715970337923,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    "criterio": "MáximoR2global de validación, empateRMSE; no se selecciona con prueba.",
+    "por_fusion": {
+      "promedio_redes": {
+        "fusion": "promedio_redes",
+        "conjunto": "validacion",
+        "R2": 0.19619539168641253,
+        "R2_esperado_uniforme": 0.19619539168641253,
+        "MAE": 2.8132160644104944,
+        "RMSE": 4.894494839592643,
+        "RMSE_esperado_uniforme": 4.894494839592643,
+        "R2_positivos_reales": 0.004750998253938099,
+        "MAE_positivos_reales": 5.248650122806508,
+        "MAE_TP": 5.234408953579204,
+        "n_regresados": 5764,
+        "n_FN": 55
+      },
+      "GAM": {
+        "fusion": "GAM",
+        "alpha": 0.1,
+        "knots": 8,
+        "conjunto": "validacion",
+        "R2": 0.2579707048339581,
+        "R2_esperado_uniforme": 0.2579707048339581,
+        "MAE": 2.7646271135350533,
+        "RMSE": 4.702655389582858,
+        "RMSE_esperado_uniforme": 4.702655389582858,
+        "R2_positivos_reales": 0.039644640619749816,
+        "MAE_positivos_reales": 5.207980496066544,
+        "MAE_TP": 5.193251681434685,
+        "n_regresados": 5764,
+        "n_FN": 55
+      },
+      "polinomio_2": {
+        "fusion": "polinomio_2",
+        "alpha": 0.0001,
+        "degree": 2,
+        "conjunto": "validacion",
+        "R2": 0.2560736586919258,
+        "R2_esperado_uniforme": 0.2560736586919258,
+        "MAE": 2.7591314851060003,
+        "RMSE": 4.708662874544329,
+        "RMSE_esperado_uniforme": 4.708662874544329,
+        "R2_positivos_reales": 0.038592912305764226,
+        "MAE_positivos_reales": 5.199077780682467,
+        "MAE_TP": 5.184242218863748,
+        "n_regresados": 5764,
+        "n_FN": 55
+      },
+      "polinomio_3": {
+        "fusion": "polinomio_3",
+        "alpha": 0.0001,
+        "degree": 3,
+        "conjunto": "validacion",
+        "R2": 0.2552248519596022,
+        "R2_esperado_uniforme": 0.2552248519596022,
+        "MAE": 2.760797324534514,
+        "RMSE": 4.711348359062445,
+        "RMSE_esperado_uniforme": 4.711348359062445,
+        "R2_positivos_reales": 0.04074558748384405,
+        "MAE_positivos_reales": 5.194940604739236,
+        "MAE_TP": 5.18005543649434,
+        "n_regresados": 5764,
+        "n_FN": 55
+      },
+      "Poisson_IG_truncada": {
+        "fusion": "Poisson_IG_truncada",
+        "alpha": 0.01,
+        "conjunto": "validacion",
+        "R2": 0.2604466841886741,
+        "R2_esperado_uniforme": 0.2604466841886741,
+        "MAE": 2.7533768121751616,
+        "RMSE": 4.694802999499597,
+        "RMSE_esperado_uniforme": 4.694802999499597,
+        "R2_positivos_reales": 0.038018225827434526,
+        "MAE_positivos_reales": 5.200534070646285,
+        "MAE_TP": 5.185715970337923,
+        "n_regresados": 5764,
+        "n_FN": 55
+      }
+    }
+  },
+  "resultados": [
+    {
+      "fusion": "promedio_redes",
+      "conjunto": "validacion",
+      "R2": 0.19619539168641253,
+      "R2_esperado_uniforme": 0.19619539168641253,
+      "MAE": 2.8132160644104944,
+      "RMSE": 4.894494839592643,
+      "RMSE_esperado_uniforme": 4.894494839592643,
+      "R2_positivos_reales": 0.004750998253938099,
+      "MAE_positivos_reales": 5.248650122806508,
+      "MAE_TP": 5.234408953579204,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    {
+      "fusion": "promedio_redes",
+      "conjunto": "prueba",
+      "R2": 0.19228029493669352,
+      "R2_esperado_uniforme": 0.19228029493669352,
+      "MAE": 2.6765050540301294,
+      "RMSE": 4.687777803161782,
+      "RMSE_esperado_uniforme": 4.687777803161782,
+      "R2_positivos_reales": 0.049681255442755035,
+      "MAE_positivos_reales": 4.933281053908764,
+      "MAE_TP": 4.934637702705276,
+      "n_regresados": 8702,
+      "n_FN": 70
+    },
+    {
+      "fusion": "GAM",
+      "conjunto": "validacion",
+      "R2": 0.2579707048339581,
+      "R2_esperado_uniforme": 0.2579707048339581,
+      "MAE": 2.7646271135350533,
+      "RMSE": 4.702655389582858,
+      "RMSE_esperado_uniforme": 4.702655389582858,
+      "R2_positivos_reales": 0.039644640619749816,
+      "MAE_positivos_reales": 5.207980496066544,
+      "MAE_TP": 5.193251681434685,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    {
+      "fusion": "GAM",
+      "conjunto": "prueba",
+      "R2": 0.24673318140271439,
+      "R2_esperado_uniforme": 0.24673318140271439,
+      "MAE": 2.645573824857687,
+      "RMSE": 4.527006289504897,
+      "RMSE_esperado_uniforme": 4.527006289504897,
+      "R2_positivos_reales": 0.07132957701227516,
+      "MAE_positivos_reales": 4.923374004766873,
+      "MAE_TP": 4.924629811126286,
+      "n_regresados": 8702,
+      "n_FN": 70
+    },
+    {
+      "fusion": "polinomio_2",
+      "conjunto": "validacion",
+      "R2": 0.2560736586919258,
+      "R2_esperado_uniforme": 0.2560736586919258,
+      "MAE": 2.7591314851060003,
+      "RMSE": 4.708662874544329,
+      "RMSE_esperado_uniforme": 4.708662874544329,
+      "R2_positivos_reales": 0.038592912305764226,
+      "MAE_positivos_reales": 5.199077780682467,
+      "MAE_TP": 5.184242218863748,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    {
+      "fusion": "polinomio_2",
+      "conjunto": "prueba",
+      "R2": 0.24747699163244974,
+      "R2_esperado_uniforme": 0.24747699163244974,
+      "MAE": 2.6341404968587905,
+      "RMSE": 4.524770650581237,
+      "RMSE_esperado_uniforme": 4.524770650581237,
+      "R2_positivos_reales": 0.07325753450142014,
+      "MAE_positivos_reales": 4.904045708204744,
+      "MAE_TP": 4.905104774596242,
+      "n_regresados": 8702,
+      "n_FN": 70
+    },
+    {
+      "fusion": "polinomio_3",
+      "conjunto": "validacion",
+      "R2": 0.2552248519596022,
+      "R2_esperado_uniforme": 0.2552248519596022,
+      "MAE": 2.760797324534514,
+      "RMSE": 4.711348359062445,
+      "RMSE_esperado_uniforme": 4.711348359062445,
+      "R2_positivos_reales": 0.04074558748384405,
+      "MAE_positivos_reales": 5.194940604739236,
+      "MAE_TP": 5.18005543649434,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    {
+      "fusion": "polinomio_3",
+      "conjunto": "prueba",
+      "R2": 0.24694520449977198,
+      "R2_esperado_uniforme": 0.24694520449977198,
+      "MAE": 2.6329934810252458,
+      "RMSE": 4.526369133174042,
+      "RMSE_esperado_uniforme": 4.526369133174042,
+      "R2_positivos_reales": 0.07608878274405562,
+      "MAE_positivos_reales": 4.893567991630562,
+      "MAE_TP": 4.894520406842737,
+      "n_regresados": 8702,
+      "n_FN": 70
+    },
+    {
+      "fusion": "Poisson_IG_truncada",
+      "conjunto": "validacion",
+      "R2": 0.2604466841886741,
+      "R2_esperado_uniforme": 0.2604466841886741,
+      "MAE": 2.7533768121751616,
+      "RMSE": 4.694802999499597,
+      "RMSE_esperado_uniforme": 4.694802999499597,
+      "R2_positivos_reales": 0.038018225827434526,
+      "MAE_positivos_reales": 5.200534070646285,
+      "MAE_TP": 5.185715970337923,
+      "n_regresados": 5764,
+      "n_FN": 55
+    },
+    {
+      "fusion": "Poisson_IG_truncada",
+      "conjunto": "prueba",
+      "R2": 0.252427799301441,
+      "R2_esperado_uniforme": 0.252427799301441,
+      "MAE": 2.6245777653587172,
+      "RMSE": 4.5098619801038256,
+      "RMSE_esperado_uniforme": 4.5098619801038256,
+      "R2_positivos_reales": 0.07477467613961464,
+      "MAE_positivos_reales": 4.891867656360031,
+      "MAE_TP": 4.892802764102534,
+      "n_regresados": 8702,
+      "n_FN": 70
+    }
+  ]
+}

@@ -16,4 +16,4 @@ El repositorio es público. No incluye base con coordenadas, respuestas porfila,
 
 No se cambian las observaciones reales al añadirε. Día de muestreo es aproximado1/16salvo fecha exacta disponible y compatible; ventanas históricas siguen la referencia quincenal. Incorporar fechas exactas a toda la base requiere reconstruir las ventanas y reentrenar.
 
-La unidad de incidencia no está confirmada; no se supone porcentaje ni conteo binomial de hojas sin denominador.200coordenadas tienen atributos distintos entre parcelas: se mantienen juntas en la partición, sin afirmar cuál registro es correcto.
+El usuario confirmó que la incidencia es un porcentaje. No se supone conteo binomial de hojas sin denominador. La nueva fusión tiene rango operativo0..40;PIGse ensaya sólo para puntos porcentuales enteros.200coordenadas tienen atributos distintos entre parcelas: se mantienen juntas en la partición, sin afirmar cuál registro es correcto.

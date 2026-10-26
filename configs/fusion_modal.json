@@ -1,0 +1,9 @@
+{
+  "experiment": "fusion_modal_positivos_20_30_30_40_v1",
+  "seed": 42,
+  "base_epochs": 80,
+  "base_layers": {"topografia": [36, 18], "excel": [6, 9, 18, 36], "simulacion": [10, 5, 10, 5, 10, 5]},
+  "fusion_layers": [20, 30, 30, 40],
+  "checkpoints": [80, 160, 320],
+  "max_negatives": 0
+}

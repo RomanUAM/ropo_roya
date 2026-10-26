@@ -1,0 +1,9 @@
+{
+  "aprobado": true,
+  "positivos_train": 11900,
+  "negativos_train": 0,
+  "coordenadas_disjuntas_5_folds": true,
+  "inferencia_independiente_48": true,
+  "metanormalizacion_solo_OOF_train": true,
+  "HR_24_dias_no_inventada": true
+}

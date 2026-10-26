@@ -1,0 +1,14 @@
+{
+  "estado": "aprobado",
+  "pruebas": [
+    "96comparacionesdeACPcon/sinprobabilidades, cuatroarquitecturas yseisregresores",
+    "48filasporarquitectura y12regresoresreproducidas sinobjetivo",
+    "ProbabilidadestrainOOFyStandardScaler sólo11900positivos",
+    "Polinomios completosPC×probabilidad grados2/3",
+    "GPsimbólicoMSE de árbol3niveles",
+    "Entrenamientoneuronal11900positivos+100negativos,sólotrain",
+    "OOFde3redesconidentidadesyfolds correctos",
+    "Cincofusoresreproducidos,salidas0..40ynegativosen0",
+    "Eleccionesdevalidación reproducidas"
+  ]
+}

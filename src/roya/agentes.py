@@ -18,7 +18,7 @@ class Datos:
             if not d[col].isin([0,1]).all():raise ValueError('Fenología inválida:'+col)
         assert np.array_equal(d.fila_excel,m.fila_excel)
         ctx.update(d=d,m=m,w=w,ref=ref,split=m.conjunto.to_numpy())
-        issues=['Unidad de incidencia sin confirmar','Muestreos17a24conceros pendientes de verificar','200coordenadasconmetadatos topográficos distintos']
+        issues=['Unidad confirmada:porcentaje de incidencia; no asumir conteos de hojas','Muestreos17a24conceros pendientes de verificar','200coordenadasconmetadatos topográficos distintos']
         write(ctx['out']/'auditoria_datos.json',dict(n=len(d),target=q.g.TARGET,fenologia='Binaria multietiqueta',objeciones=issues))
         request=ctx['registry'].send(self.name,'orquestador','objeciones_de_datos',dict(problemas=issues),status='observado')
         ctx['registry'].send('orquestador','modelacion','alcance_exploratorio',dict(accion='Conservar datos originales, impedir promoción prospectiva y mostrar limitaciones.'),reply_to=request)

@@ -1,0 +1,16 @@
+{
+  "arquitectura": [
+    20,
+    30,
+    30,
+    40
+  ],
+  "checkpoint": {
+    "epoch": 80,
+    "n": 4642,
+    "R2": 0.042744037489031994,
+    "MAE": 5.0820236339405955,
+    "RMSE": 6.587462391826344
+  },
+  "criterio": "Sólo R2de positivos de validación"
+}
