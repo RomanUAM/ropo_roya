@@ -1,0 +1,16 @@
+{
+  "experiment": "calendario_r2_uniforme_v1",
+  "seed": 42,
+  "representations": ["completas", "ACP"],
+  "families": ["RF", "LR", "GP", "MIXTA"],
+  "uniform_half_width": 0.021834988,
+  "monte_carlo_repetitions": 200,
+  "ridge_alphas": [0.1, 10.0, 1000.0],
+  "classification_cost_FP": 1.0,
+  "classification_cost_FN": 1.0,
+  "quantity_selection": "R2_global_validacion_media_estocastica",
+  "train_calibration_fold": 0,
+  "pca_variance": 0.95,
+  "calendar_day": "Exacto si está disponible; en esta base aproximado1/16 por quincena",
+  "simulation": "Conservar aptitud térmica y humedad real previa como variables distintas; no inventar clima diario"
+}

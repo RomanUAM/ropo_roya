@@ -1,0 +1,58 @@
+{
+  "RF": {
+    "epoch": 320,
+    "umbral": 0.525,
+    "TN": 5770,
+    "FP": 1108,
+    "FN": 135,
+    "TP": 4507,
+    "sensibilidad": 0.9709177078845326,
+    "especificidad": 0.8389066589124745,
+    "proporcion_alertas_falsas": 0.19732858414959928,
+    "exactitud_balanceada": 0.9049121833985035,
+    "Brier": 0.07421627557384575,
+    "log_loss": 0.2238988636812798
+  },
+  "LR": {
+    "epoch": 320,
+    "umbral": 0.55,
+    "TN": 5737,
+    "FP": 1141,
+    "FN": 84,
+    "TP": 4558,
+    "sensibilidad": 0.981904351572598,
+    "especificidad": 0.8341087525443442,
+    "proporcion_alertas_falsas": 0.20021056325671172,
+    "exactitud_balanceada": 0.9080065520584711,
+    "Brier": 0.07653060335677989,
+    "log_loss": 0.23228870948514163
+  },
+  "GP": {
+    "epoch": 80,
+    "umbral": 0.05,
+    "TN": 5616,
+    "FP": 1262,
+    "FN": 144,
+    "TP": 4498,
+    "sensibilidad": 0.968978888410168,
+    "especificidad": 0.8165164291945333,
+    "proporcion_alertas_falsas": 0.21909722222222222,
+    "exactitud_balanceada": 0.8927476588023506,
+    "Brier": 0.09745755523778546,
+    "log_loss": 0.33083569524523027
+  },
+  "MIXTA": {
+    "epoch": 320,
+    "umbral": 0.5,
+    "TN": 5662,
+    "FP": 1216,
+    "FN": 32,
+    "TP": 4610,
+    "sensibilidad": 0.993106419646704,
+    "especificidad": 0.8232044198895028,
+    "proporcion_alertas_falsas": 0.2087195331273601,
+    "exactitud_balanceada": 0.9081554197681034,
+    "Brier": 0.07680426704573644,
+    "log_loss": 0.2310694295937536
+  }
+}

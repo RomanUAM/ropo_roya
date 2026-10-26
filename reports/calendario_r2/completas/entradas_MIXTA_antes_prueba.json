@@ -1,0 +1,23 @@
+[
+  {
+    "familia": "RF",
+    "vista": "individual",
+    "indice": 2,
+    "Brier": 0.09054765735862062,
+    "log_loss": 0.27580457760460725
+  },
+  {
+    "familia": "LR",
+    "vista": "contexto",
+    "indice": 0,
+    "Brier": 0.07868261796844594,
+    "log_loss": 0.2477983376416228
+  },
+  {
+    "familia": "GP",
+    "vista": "individual",
+    "indice": 2,
+    "Brier": 0.11705007099414004,
+    "log_loss": 0.4005543140695573
+  }
+]

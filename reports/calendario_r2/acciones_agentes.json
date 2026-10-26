@@ -1,0 +1,461 @@
+[
+  {
+    "id": "2defa47311ef4ea786dcc0253ccf4dc8",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:19:42.053504+00:00"
+  },
+  {
+    "id": "86b6fee725fa4ebf8292feec37c4e376",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "2defa47311ef4ea786dcc0253ccf4dc8",
+    "time": "2026-10-26T22:19:42.063836+00:00"
+  },
+  {
+    "id": "817a221b001640abad80b7a70db144e7",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:20:15.434557+00:00"
+  },
+  {
+    "id": "0cc809d0f98f4cfeb514d5ad7c9f64ca",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "817a221b001640abad80b7a70db144e7",
+    "time": "2026-10-26T22:20:15.442854+00:00"
+  },
+  {
+    "id": "85f2daecfc7747d0a15ac3262b635520",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "cantidad_ajustada",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:21:23.469101+00:00"
+  },
+  {
+    "id": "118b3b1bba604fd6a605e25547142596",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:21:42.756550+00:00"
+  },
+  {
+    "id": "f5e14b846d564d1d84ebdae02d7d8a8c",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "118b3b1bba604fd6a605e25547142596",
+    "time": "2026-10-26T22:21:42.763529+00:00"
+  },
+  {
+    "id": "7367c941faf040b1aae919e5b2c1c69b",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:22:05.065072+00:00"
+  },
+  {
+    "id": "325c910922b949d296a32b5bae553f82",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "7367c941faf040b1aae919e5b2c1c69b",
+    "time": "2026-10-26T22:22:05.073577+00:00"
+  },
+  {
+    "id": "b3fbb29a591f4060bb088559b948c956",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "cantidad_ajustada",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:22:28.271831+00:00"
+  },
+  {
+    "id": "62ed22ca22d74ce8bec5081bf3d17392",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:23:03.934992+00:00"
+  },
+  {
+    "id": "8e8ee159dd1e4de890538202eea78e7e",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "62ed22ca22d74ce8bec5081bf3d17392",
+    "time": "2026-10-26T22:23:03.943478+00:00"
+  },
+  {
+    "id": "0deaf3c15a3d49b8905f6d9e72439309",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:23:38.922852+00:00"
+  },
+  {
+    "id": "cc52e36dbcfa4a8eb124c570a01e1f53",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "0deaf3c15a3d49b8905f6d9e72439309",
+    "time": "2026-10-26T22:23:38.937094+00:00"
+  },
+  {
+    "id": "041622df98e54c93884c5813321bc7e1",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:25:00.016610+00:00"
+  },
+  {
+    "id": "9d8ce4d337164fe4ae12caa07f816c11",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "041622df98e54c93884c5813321bc7e1",
+    "time": "2026-10-26T22:25:00.031133+00:00"
+  },
+  {
+    "id": "595ca8d93d3c423da61bde26594f5e03",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_clasificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:25:35.875055+00:00"
+  },
+  {
+    "id": "ada2c3cf69484ec5825e6593ff9ff188",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "clasificador_congelado",
+    "status": "ok",
+    "reply_to": "595ca8d93d3c423da61bde26594f5e03",
+    "time": "2026-10-26T22:25:35.884124+00:00"
+  },
+  {
+    "id": "61c74ce0826d424eb812b5ddf4573026",
+    "sender": "modelacion",
+    "recipient": "estadistica",
+    "action": "seleccion_cantidad",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:28:34.696904+00:00"
+  },
+  {
+    "id": "dbf7920848a14a4cb1251e2722ad15bc",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "seleccion_congelada",
+    "status": "ok",
+    "reply_to": "61c74ce0826d424eb812b5ddf4573026",
+    "time": "2026-10-26T22:28:34.720885+00:00"
+  },
+  {
+    "id": "0e857a0cf8fe4329a8f310d4c3179a91",
+    "sender": "orquestador",
+    "recipient": "datos",
+    "action": "asignar_tarea",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:43.397239+00:00"
+  },
+  {
+    "id": "fdfe67a11855440398327ca52bf6d818",
+    "sender": "datos",
+    "recipient": "orquestador",
+    "action": "objeciones_de_datos",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:46.900506+00:00"
+  },
+  {
+    "id": "35c00283cfa04a37a924288f64f3e0a1",
+    "sender": "orquestador",
+    "recipient": "modelacion",
+    "action": "alcance_exploratorio",
+    "status": "ok",
+    "reply_to": "fdfe67a11855440398327ca52bf6d818",
+    "time": "2026-10-26T22:35:46.906482+00:00"
+  },
+  {
+    "id": "90ac21b79dee4fcaab6270eecdc6cf4c",
+    "sender": "datos",
+    "recipient": "orquestador",
+    "action": "tarea_completada",
+    "status": "ok",
+    "reply_to": "0e857a0cf8fe4329a8f310d4c3179a91",
+    "time": "2026-10-26T22:35:46.910896+00:00"
+  },
+  {
+    "id": "af9bee27d98846a281a31a6074fc0c81",
+    "sender": "orquestador",
+    "recipient": "ambiente_cultivo",
+    "action": "asignar_tarea",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:46.916559+00:00"
+  },
+  {
+    "id": "6217f0608f33426a9f9717432e4b5991",
+    "sender": "ambiente_cultivo",
+    "recipient": "auditoria",
+    "action": "calendario_y_procedencia",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:47.562386+00:00"
+  },
+  {
+    "id": "ec7314e3f2be4f05a1976e3f84f06552",
+    "sender": "auditoria",
+    "recipient": "ambiente_cultivo",
+    "action": "devolver_fecha_exacta",
+    "status": "ok",
+    "reply_to": "6217f0608f33426a9f9717432e4b5991",
+    "time": "2026-10-26T22:35:47.570564+00:00"
+  },
+  {
+    "id": "bfac25175f244d9abd1fd4d02e6a2bc9",
+    "sender": "ambiente_cultivo",
+    "recipient": "orquestador",
+    "action": "tarea_completada",
+    "status": "ok",
+    "reply_to": "af9bee27d98846a281a31a6074fc0c81",
+    "time": "2026-10-26T22:35:47.575439+00:00"
+  },
+  {
+    "id": "9b9d4b2ff5594ee794cfedae5fbd6d2a",
+    "sender": "orquestador",
+    "recipient": "diseno_experimental",
+    "action": "asignar_tarea",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:47.580433+00:00"
+  },
+  {
+    "id": "eb3a889313ce45bc912c814292ee48d5",
+    "sender": "diseno_experimental",
+    "recipient": "modelacion",
+    "action": "protocolo_congelado",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:47.819078+00:00"
+  },
+  {
+    "id": "b63421bec1fd4952a8d41ff86837d14e",
+    "sender": "diseno_experimental",
+    "recipient": "orquestador",
+    "action": "tarea_completada",
+    "status": "ok",
+    "reply_to": "9b9d4b2ff5594ee794cfedae5fbd6d2a",
+    "time": "2026-10-26T22:35:47.826145+00:00"
+  },
+  {
+    "id": "b8cc52847c244993abd8ab7e907c71b0",
+    "sender": "orquestador",
+    "recipient": "modelacion",
+    "action": "asignar_tarea",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:47.831008+00:00"
+  },
+  {
+    "id": "c4cbe423f204404d8eedfc800a81b8dc",
+    "sender": "modelacion",
+    "recipient": "orquestador",
+    "action": "tarea_completada",
+    "status": "ok",
+    "reply_to": "b8cc52847c244993abd8ab7e907c71b0",
+    "time": "2026-10-26T22:35:49.978356+00:00"
+  },
+  {
+    "id": "6f84646011c54fdba3fa587d9216917a",
+    "sender": "orquestador",
+    "recipient": "estadistica",
+    "action": "asignar_tarea",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:49.984491+00:00"
+  },
+  {
+    "id": "8f32d7492027459ca44aab9c2b7e882d",
+    "sender": "estadistica",
+    "recipient": "auditoria",
+    "action": "reanudar_resultados_congelados",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:49.990279+00:00"
+  },
+  {
+    "id": "4e3ecc4708f447a1b8aebbc3328b1252",
+    "sender": "estadistica",
+    "recipient": "auditoria",
+    "action": "comparacion_completa",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:35:49.994569+00:00"
+  },
+  {
+    "id": "1ba98b86d60945d9957c1366c24f21da",
+    "sender": "auditoria",
+    "recipient": "orquestador",
+    "action": "solicitar_pruebas_inferencia",
+    "status": "ok",
+    "reply_to": "4e3ecc4708f447a1b8aebbc3328b1252",
+    "time": "2026-10-26T22:35:49.998788+00:00"
+  },
+  {
+    "id": "763e20bc2ccf4f5cbd4248a48642659f",
+    "sender": "estadistica",
+    "recipient": "orquestador",
+    "action": "tarea_completada",
+    "status": "ok",
+    "reply_to": "6f84646011c54fdba3fa587d9216917a",
+    "time": "2026-10-26T22:35:50.002938+00:00"
+  },
+  {
+    "id": "37db1d51f8ad4163b9f981195ec2d119",
+    "sender": "auditoria",
+    "recipient": "orquestador",
+    "action": "verificacion",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:36:27.503827+00:00"
+  },
+  {
+    "id": "5e3c7f63ce5c4dcd8dd49175801b4707",
+    "sender": "comunicacion_cientifica",
+    "recipient": "memoria",
+    "action": "informe_reproducible",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:36:27.933938+00:00"
+  },
+  {
+    "id": "63e0342ba12d40c1a203004c160d6fd0",
+    "sender": "memoria",
+    "recipient": "orquestador",
+    "action": "siguiente_experimento",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:36:27.940446+00:00"
+  },
+  {
+    "id": "89ba82eaad3d49cdb452cdb5e2f60724",
+    "sender": "datos",
+    "recipient": "orquestador",
+    "action": "objeciones_de_datos",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:45:38.920313+00:00"
+  },
+  {
+    "id": "e224bd55bf4641388feee60f2f3b76f1",
+    "sender": "orquestador",
+    "recipient": "modelacion",
+    "action": "alcance_exploratorio",
+    "status": "ok",
+    "reply_to": "89ba82eaad3d49cdb452cdb5e2f60724",
+    "time": "2026-10-26T22:45:38.925604+00:00"
+  },
+  {
+    "id": "c1588a0a4703463bb2dfae3bb8d81a00",
+    "sender": "ambiente_cultivo",
+    "recipient": "auditoria",
+    "action": "calendario_y_procedencia",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:45:39.967405+00:00"
+  },
+  {
+    "id": "df67686319254ffa9054f3b691831837",
+    "sender": "auditoria",
+    "recipient": "ambiente_cultivo",
+    "action": "devolver_fecha_exacta",
+    "status": "ok",
+    "reply_to": "c1588a0a4703463bb2dfae3bb8d81a00",
+    "time": "2026-10-26T22:45:39.973952+00:00"
+  },
+  {
+    "id": "0b9d22afabfb4d6990a745234d95636c",
+    "sender": "diseno_experimental",
+    "recipient": "modelacion",
+    "action": "protocolo_congelado",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:45:40.181821+00:00"
+  },
+  {
+    "id": "ad8c7b8b101347e6a7c928c360943188",
+    "sender": "datos",
+    "recipient": "orquestador",
+    "action": "objeciones_de_datos",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:47:07.258216+00:00"
+  },
+  {
+    "id": "ccfc07ae3d9e47a8bc258937406e142b",
+    "sender": "orquestador",
+    "recipient": "modelacion",
+    "action": "alcance_exploratorio",
+    "status": "ok",
+    "reply_to": "ad8c7b8b101347e6a7c928c360943188",
+    "time": "2026-10-26T22:47:07.263777+00:00"
+  },
+  {
+    "id": "0b0f58885bed4fa09c60884660e88940",
+    "sender": "ambiente_cultivo",
+    "recipient": "auditoria",
+    "action": "calendario_y_procedencia",
+    "status": "observado",
+    "reply_to": null,
+    "time": "2026-10-26T22:47:07.873286+00:00"
+  },
+  {
+    "id": "c4aa1225192f4c65be00dc55682f1ec9",
+    "sender": "auditoria",
+    "recipient": "ambiente_cultivo",
+    "action": "devolver_fecha_exacta",
+    "status": "ok",
+    "reply_to": "0b0f58885bed4fa09c60884660e88940",
+    "time": "2026-10-26T22:47:07.878927+00:00"
+  },
+  {
+    "id": "dc167d8e05a543069e40ea7601787895",
+    "sender": "diseno_experimental",
+    "recipient": "modelacion",
+    "action": "protocolo_congelado",
+    "status": "ok",
+    "reply_to": null,
+    "time": "2026-10-26T22:47:08.078765+00:00"
+  }
+]

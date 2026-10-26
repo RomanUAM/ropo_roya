@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.venv/
+.env
+runs/
+data/
+*.joblib
+*.npz
+*.parquet
+*.zip
+*.sqlite*
+*.tmp
+*.log

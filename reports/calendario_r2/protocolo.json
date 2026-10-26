@@ -1,0 +1,52 @@
+{
+  "config": {
+    "experiment": "calendario_r2_uniforme_v1",
+    "seed": 42,
+    "representations": [
+      "completas",
+      "ACP"
+    ],
+    "families": [
+      "RF",
+      "LR",
+      "GP",
+      "MIXTA"
+    ],
+    "uniform_half_width": 0.021834988,
+    "monte_carlo_repetitions": 200,
+    "ridge_alphas": [
+      0.1,
+      10.0,
+      1000.0
+    ],
+    "classification_cost_FP": 1.0,
+    "classification_cost_FN": 1.0,
+    "quantity_selection": "R2_global_validacion_media_estocastica",
+    "train_calibration_fold": 0,
+    "pca_variance": 0.95,
+    "calendar_day": "Exacto si está disponible; en esta base aproximado1/16 por quincena",
+    "simulation": "Conservar aptitud térmica y humedad real previa como variables distintas; no inventar clima diario"
+  },
+  "particion": {
+    "prueba": 17352,
+    "train": 28728,
+    "validacion": 11520
+  },
+  "coordenadas": {
+    "prueba": 660,
+    "train": 1100,
+    "validacion": 440
+  },
+  "sources": {
+    "geografia_roya/base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+    "barreras_naturales/analisis/relieve_y_estructuras_por_sitio.csv": "6666bc791cb16687e39a3db220d91a7c2e9e7bc0be6df4b117ac7592e6ec51b9",
+    "evaluacion_humedad_bnn/modelo.joblib": "a2129081cdae95349ca74693d535beb6b4a4e27595a29c2efb7356d3ef11eb2c",
+    "evaluacion_integral_binaria_topografia/comunidades_por_fila.csv": "3b64ada0b87611f0c5deae99775536fac9cf057da17e2255c85d15be999c0aac",
+    "evaluacion_integral_binaria_topografia/OOF_RF.csv": "4d41e73a86ca238a480f673cf5efa1a183907d7e9638a31203942f1c3230eb9e"
+  },
+  "OOF": 5,
+  "calibracion": "Fold0 de train positivo reserva correcciónC,smearing e hiperparámetros. Reajuste final sobre11900positivos train.",
+  "seleccion": "Validación externa elige rutas y cantidad porR2esperado uniforme; prueba abierta después del congelado.",
+  "independencia": "Comunidades estáticas de train preservadas; topografía previa porfold; otras comunidades son transductivas dentroOOF.",
+  "futuro": "Nueva cohorte/temporada pendiente, no se fabrica ni se reutiliza prueba como entrenamiento."
+}

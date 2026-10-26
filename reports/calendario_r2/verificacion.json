@@ -1,0 +1,16 @@
+{
+  "estado": "aprobado",
+  "pruebas": [
+    "448comparaciones=2representaciones*4arquitecturas*7regresiones*4variantes*2conjuntos",
+    "Selección porR2esperado de validación reproducida",
+    "Ocho matrices reproducidas",
+    "48filas por ocho rutas reproducidas sin objetivo",
+    "Negativos no llaman transform ni predict",
+    "Fecha aproximada explícita y calendario en clasificadores",
+    "PCAe indicadores separados;PCAclassifier ajustado sólo train",
+    "11900positivos train;calibración2382positivos fold0,fit9518",
+    "Ruido porfila/semilla reproducible, sin selección de realización",
+    "Ruido de media cero no mejoraR2esperado",
+    "Rechazo de fila externa"
+  ]
+}

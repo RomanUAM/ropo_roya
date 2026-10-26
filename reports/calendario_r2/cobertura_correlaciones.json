@@ -1,0 +1,27 @@
+{
+  "temperatura": {
+    "valores_diarios_finitos": 803000,
+    "total": 803000,
+    "filas_actual_disponibles": 57600,
+    "filas_24d_completos": 52800
+  },
+  "humedad_relativa": {
+    "valores_diarios_finitos": 2200,
+    "total": 803000,
+    "filas_actual_disponibles": 2400,
+    "filas_24d_completos": 0
+  },
+  "fuente": {
+    "archivo": "roya_escenarios_diarios.npz",
+    "sha256": "44816520dfda9277c4332b7821d948d99e770477c780a2ef1db8773fc7dea001",
+    "origen": "Limpiador_Excel_Streamlit.zip,versión14; matrices originales sin resimular"
+  },
+  "alcance": "Y=incidencia observada de roya. Sólo clima simulado, topografía/hidrografía y urbanismo; no fenología ni clima real ni aptitud térmica como sustitutos.",
+  "advertencias": [
+    "Correlaciones descriptivas, no utilizadas para seleccionar predictores en este experimento.",
+    "HRsólo cubre día inicial, semilla; no permite correlación temporal ni24dprevios.",
+    "ICpor coordenada no corrige toda dependencia entre parcelas; no interpretación causal.",
+    "Hay200coordenadasconmetadatos topográficos contradictorios.",
+    "Fechas aproximadas porquincena."
+  ]
+}

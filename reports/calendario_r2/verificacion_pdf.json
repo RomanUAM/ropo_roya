@@ -1,0 +1,7 @@
+{
+  "estado": "aprobado",
+  "paginas": 13,
+  "graficas_de_regresion": 56,
+  "revision": "Todas las páginas renderizadas e inspeccionadas; sin recortes ni desbordamientos.",
+  "pdf_sha256": "a6ebd868edb83eda4a57b3c66dbb86c006170ee310ce9324329d9e647123096b"
+}

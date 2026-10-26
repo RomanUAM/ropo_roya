@@ -1,0 +1,10 @@
+{
+  "n": 57600,
+  "target": "Incidencia de roya del Café",
+  "fenologia": "Binaria multietiqueta",
+  "objeciones": [
+    "Unidad de incidencia sin confirmar",
+    "Muestreos17a24conceros pendientes de verificar",
+    "200coordenadasconmetadatos topográficos distintos"
+  ]
+}

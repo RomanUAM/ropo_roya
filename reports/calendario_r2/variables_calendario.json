@@ -1,0 +1,16 @@
+{
+  "campos": [
+    "mes_calendario",
+    "dia_calendario",
+    "mes_sen",
+    "mes_cos",
+    "dia_sen",
+    "dia_cos",
+    "fecha_aproximada"
+  ],
+  "filas_fecha_aproximada": 57600,
+  "dia": "1/16aproximado porquincena; no fecha observada",
+  "mes": "Registrado en la base",
+  "binarias": "Fuera dePCA y potencias",
+  "topografia": "Orientación circular, pendiente, coordenadas, altitud original+MDE; comunidades anteriores conservadas"
+}

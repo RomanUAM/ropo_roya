@@ -1,0 +1,14 @@
+# Protocolo de evaluación
+
+1. Unidad observacional: fila original de la base; no se añaden respuestas sintéticas. Partición por coordenada50/20/30, agrupada en1,100/440/660coordenadas y28,728/11,520/17,352filas. Coordenadas compartidas permanecen juntas.
+2. CincofoldsOOF de train alimentan el coordinador, sin usar la presencia real del registro al inferir. Mes/día se añaden a antecedentes e individuo. Contexto estático conserva sus modelos/OOF ya congelados.
+3. Cantidad se entrena sólo con11,900positivos train. Calibración interna:fold0con2,382positivos; ajuste con9,518positivos de otrosfolds. Allí se eligenalpha,smearing,Cyepochs. Cada modelo final se reajusta en11,900positivos; no se refita con validación o prueba.
+4. Normalización e imputación se ajustan en cada conjunto de entrenamiento correspondiente. ACP95% sólo en continuas; indicadores0/1ycalendario se mantienen separados. Polinomios completos2/3de variables continuas;RidgeconsolverLSQR,tolerancia0.005,máximo60iteraciones. Búsquedaalpha0.1,10,1000; no óptimo global. MLP36-18,alpha0.01/0.1,checkpoints40/80/160,Adam,batch256,seed42.
+5. Modelos de cantidad tienen intercepto. C es corrección residual constante estimada en calibración interna, con piso1para predicciones positivas. Los logarítmicos comparanexpm1coninversión corregida por smearing. No se altera el objetivo observado.
+6. Variantes:original,constante,original_uniforme,constante_uniforme. ε~U(-a,+a),a=0.021834988. Sólo predicciones de presencia reciben regresión y ruido; negativos permanecen0. El centro es determinista; escenarios reproducibles porfila/semilla. No se escoge la semilla de mayorR².
+7. Clasificación se selecciona porcostosFP/FNdevalidación (ambos1en esta ejecución), empateBrier/balanceada. Cantidad se selecciona porR²esperado uniforme de validación, conRMSEpara desempate. Antes de prueba se guarda selección; estadística la reproduce desdeCSV.
+8. Para εindependiente y de media0:E[SSE]=SSEcentral+nregresados*a²/3. Se calculaR²esperado analítico y distribución de200realizaciones. MAE/RMSEcentrales y R²sobrepositivos se informan para no ocultar errores entre plantas enfermas.
+9. Prueba sólo informa resultados tras congelar. Históricamente se ha consultado esta misma prueba en iteraciones previas: la evaluación completa sigue siendo exploratoria. No se proclama validación prospectiva.
+10. Correlaciones solicitadas: cantidad real vs temperatura/humedad simuladas, topografía y urbanismo. Ventana24d estrictamente previa. No reemplazar ausencia de humedad simulada por humedad real o aptitud térmica. Correlaciones no seleccionan variables en esta ejecución; se informantrain/prueba/todos/positivos y ajustes municipio+mes.
+
+Pendientes que condicionan investigación: confirmar unidad, ceros17a24, fechas exactas,200conflictos geográficos,HRdiaria y otra temporada/parcelas. Se preservan referencias de menorMAEaunque otro modelo ganeR².
