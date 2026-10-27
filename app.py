@@ -9,7 +9,7 @@ st.title('Roya del café: presencia y cantidad')
 project=Path(__file__).resolve().parent
 advanced=project/'reports/avanzado'
 historical=project/'reports/calendario_r2'
-experiment=st.selectbox('Experimento',['Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
+experiment=st.selectbox('Experimento',['Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
 if (advanced/'redes_resultados.json').exists():
     with st.expander('Comparaciones previas: ACP, GAM y PIG',expanded=False):
         st.write('Cantidad:11,900positivos+100negativos de entrenamiento. Validación/prueba completas. Unidad:porcentaje; rango operativo0–40.')
@@ -30,7 +30,15 @@ with_probs=True
 stochastic=False
 seed=42
 gate_modal=True
-if experiment.startswith('Fusión'):
+if experiment.startswith('Media Poisson'):
+    st.write('Toda la población, incluidos ceros; mes en las tres ramas y en la fusión 20–30–30–40. Media de incidencia porcentual con pérdida Poisson.')
+    current=project/'reports/poisson_modal'
+    if (current/'comparacion.csv').exists():st.dataframe(pd.read_csv(current/'comparacion.csv').query("conjunto=='prueba' and ambito=='todos'"),hide_index=True)
+    st.caption('El escenario ±5% perturba la media; no es intervalo de confianza ni número de hojas enfermas.')
+    if (current/'INFORME.pdf').exists():st.download_button('Descargar informe Poisson',(current/'INFORME.pdf').read_bytes(),file_name='Roya_Media_Poisson.pdf')
+    seed=int(st.number_input('Semilla del escenario',min_value=0,value=42,step=1))
+    ready=(project/'runs/poisson_modal_todos/modelo.joblib').exists()
+elif experiment.startswith('Fusión'):
     st.write('Topografía, Excel y simulación → tres cantidades → red 20–30–30–40. Entrenamiento: 11,900 positivos, sin ceros.')
     modal=project/'reports/fusion_modal'
     if (modal/'comparacion.csv').exists():st.dataframe(pd.read_csv(modal/'comparacion.csv'),hide_index=True)
@@ -59,13 +67,16 @@ else:
     with st.expander('Cantidad vs clima SIMULADO, topografía y urbanismo'):
         if (historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv').exists():st.dataframe(pd.read_csv(historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv'),hide_index=True)
     ready=(project/'runs/calendario_r2/seleccion_antes_prueba.json').exists()
-st.info('Sólo filas existentes mediantefila_excel. Ausencia devuelve0sin ejecutar cantidad. Día1/16aproximado porquincena.')
+st.info('Sólo filas existentes mediante fila_excel. Fecha 1/16 aproximada por quincena. Poisson estima una media positiva para todos; las rutas históricas conservan su detector previo.')
 if not ready:st.info('Extraiga los artefactos privados en la raíz del proyecto y configureROYA_DATA_DIRsegúnREADME.')
 file=st.file_uploader('Registros existentesCSV',type=['csv'])
 if file is not None and st.button('Calcular'):
     try:
         data=pd.read_csv(file)
-        if experiment.startswith('Fusión'):
+        if experiment.startswith('Media Poisson'):
+            from roya.poisson_modal import predict
+            result=predict(data,seed=seed)
+        elif experiment.startswith('Fusión'):
             from roya.fusion_modal import predict
             result=predict(data,apply_presence_gate=gate_modal)
         elif experiment.startswith('Tres redes'):

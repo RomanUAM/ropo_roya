@@ -55,3 +55,10 @@ def run_fusion_modal():
     result=train();audit=analyze();registry=Registry(PROJECT/'runs/fusion_modal_positivos','aprendizaje_modal')
     registry.send('auditoria','memoria','no_promover_automaticamente',{'aprobado':audit['aprobado'],'hallazgo':'Fusión mejora poco en prueba; Excel supera fusión en validación. Más épocas empeoran. Requiere datos independientes.'});registry.close()
     return {'resultado':result,'auditoria':audit}
+
+def run_poisson():
+    """Todas las observaciones, auditoría 50/20/30 y ruido sin selección oportunista."""
+    from roya.poisson_modal import run as train
+    from roya.analisis_poisson import run as analyze
+    result=train();audit=analyze()
+    return {'resultado':result,'auditoria':audit}

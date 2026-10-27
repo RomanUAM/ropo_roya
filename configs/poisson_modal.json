@@ -1,0 +1,1 @@
+{"experiment":"poisson_modal_todos_mes_v1","seed":42,"base_epochs":80,"base_layers":{"topografia":[36,18],"excel":[6,9,18,36],"simulacion":[10,5,10,5,10,5]},"fusion_layers":[20,30,30,40],"checkpoints":[40,80,160],"split_sitios":[0.5,0.2,0.3],"noise_uniform_relative":[-0.05,0.05]}

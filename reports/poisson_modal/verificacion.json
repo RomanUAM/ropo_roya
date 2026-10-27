@@ -1,0 +1,44 @@
+{
+  "aprobado": true,
+  "particion": [
+    {
+      "conjunto": "train",
+      "con_roya": 11900,
+      "sin_roya": 16828,
+      "sitios": 1100,
+      "sitios_siempre_negativos": 18,
+      "sitios_mixtos": 1082,
+      "fraccion_sitios": 0.5
+    },
+    {
+      "conjunto": "validacion",
+      "con_roya": 4642,
+      "sin_roya": 6878,
+      "sitios": 440,
+      "sitios_siempre_negativos": 7,
+      "sitios_mixtos": 433,
+      "fraccion_sitios": 0.2
+    },
+    {
+      "conjunto": "prueba",
+      "con_roya": 6947,
+      "sin_roya": 10405,
+      "sitios": 660,
+      "sitios_siempre_negativos": 12,
+      "sitios_mixtos": 648,
+      "fraccion_sitios": 0.3
+    }
+  ],
+  "ramas_entrenadas_con_28728_registros_y_16828_ceros": true,
+  "mes_en_tres_ramas_y_fusion": true,
+  "inferencia_independiente_48": true,
+  "OOF_coordenadas_disjuntas": true,
+  "red_final": [
+    20,
+    30,
+    30,
+    40
+  ],
+  "ruido_limites_verificados": true,
+  "unidad_porcentaje_no_conteos": true
+}

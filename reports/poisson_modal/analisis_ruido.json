@@ -1,0 +1,9 @@
+{
+  "formula": "E[MSE_ruido | lambda,y] = MSE_sin_ruido + mean(lambda²)*0.05²/3",
+  "MSE_sin_ruido": 18.838642552634685,
+  "incremento_MSE_esperado": 0.01221939854166859,
+  "MSE_esperado_con_ruido": 18.850861951176352,
+  "R2_esperado_con_ruido": 0.307120273055582,
+  "semilla_no_optimizada": 42,
+  "escenario_no_es_intervalo_confianza": true
+}

@@ -1,0 +1,8 @@
+{
+  "archivo_privado": "Roya_Calendario_R2_Datos_Modelos_Privados.zip",
+  "sha256": "18537a503d5447dca8e51bd17cdd7982f4d36176c42a87ee9e21614195998a88",
+  "bytes": 196304910,
+  "numero_archivos": 214,
+  "incluye_coordenadas": true,
+  "distribucion": "Privada; conserva referencias y añade media Poisson con toda la población, mes y escenario ±5%. Datos/modelos fuera de Git."
+}

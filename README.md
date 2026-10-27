@@ -70,3 +70,15 @@ Tres ramas independientes (topografía, Excel real y simulación original) estim
 Prueba condicional, 6,947 positivos: R² **0.1062**, MAE **4.828**, RMSE **6.190** puntos porcentuales. Mejora pequeña frente a cada rama en prueba, pero Excel supera la fusión en validación. No se promueve automáticamente. Más épocas empeoraron validación. La evaluación global con detector arroja R² **0.2473**, inferior a la referencia anterior (~0.267). Los dos R² corresponden a poblaciones distintas.
 
 Véanse [análisis completo](reports/fusion_modal/INFORME.md), [informe PDF](reports/fusion_modal/INFORME.pdf) y [protocolo](reports/fusion_modal/protocolo.json). Las comparaciones ACP/probabilidades y GAM/PIG se conservan en `reports/avanzado`; datos, predicciones individuales y modelos entrenados permanecen privados.
+
+### Media Poisson con toda la población, versión 0.7
+
+Se conserva la partición **50/20/30 por coordenadas**, verificada con ambas clases en cada conjunto. Entrenamiento: 28,728 registros (11,900 positivos y 16,828 ceros); validación: 11,520; prueba: 17,352. Ninguna coordenada cruza particiones. Tres redes por fuente, ahora con pérdida Poisson y **mes categórico + seno/coseno**, alimentan la fusión **20-30-30-40** mediante salidas OOF; el mes también entra a la fusión. No se aplica detector previo ni se eliminan ceros.
+
+`roya entrenar-poisson` entrena, audita y genera el informe. `roya analizar-poisson` reproduce el análisis. `roya predecir-poisson entrada.csv salida.csv --seed 42` entrega `lambda_estimada` y un escenario multiplicativo uniforme ±5%, identificado por sitio y momento. El escenario no altera el objetivo, no se usa para elegir el modelo y no es un intervalo de confianza. Su reproducibilidad requiere la misma semilla y el mismo orden de filas.
+
+**La respuesta sigue siendo porcentaje de incidencia**: la pérdida Poisson se utiliza como cuasipérdida para estimar su media positiva, sin afirmar que represente conteos ni probabilidades de presencia. Para contar hojas enfermas faltan los conteos originales y el total examinado. La media Poisson no se recorta a 40; el informe contabiliza excesos.
+
+Prueba: **R² global 0.3076, MAE 2.373, RMSE 4.340**. Referencia de promedio mensual train: R² 0.2585. Entre positivos, R² **0.0455**: persiste una baja capacidad para discriminar magnitudes. La media mensual por sí sola explica parte importante del resultado global. La prueba histórica reutilizada sigue siendo exploratoria; los ceros tardíos deben auditarse.
+
+[Informe actualizado](reports/poisson_modal/INFORME.pdf), [análisis](reports/poisson_modal/INFORME.md), [partición con y sin roya](reports/poisson_modal/particion.csv) y [protocolo](reports/poisson_modal/protocolo.json).

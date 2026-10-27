@@ -1,0 +1,4 @@
+conjunto,con_roya,sin_roya,sitios,sitios_siempre_negativos,sitios_mixtos,fraccion_sitios
+train,11900,16828,1100,18,1082,0.5
+validacion,4642,6878,440,7,433,0.2
+prueba,6947,10405,660,12,648,0.3
