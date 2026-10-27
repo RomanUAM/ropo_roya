@@ -1,0 +1,2 @@
+# Streamlit Community Cloud: instala el paquete y las dependencias de pyproject.toml.
+-e .
