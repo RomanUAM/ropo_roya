@@ -1,0 +1,5 @@
+ensayo,train_fechas,validacion_fechas,prueba_fechas,n_train,n_train_aumentado,n_validacion,n_prueba,positivos_prueba,seleccion_validacion
+principal,14,4,5,33600,108268,9600,12000,0,squared_error_original
+retrospectivo_6,6,2,2,14400,41991,4800,4800,3847,sin_seleccion_diagnostico
+retrospectivo_8,8,2,2,19200,60752,4800,4800,4111,sin_seleccion_diagnostico
+retrospectivo_10,10,2,2,24000,81338,4800,4800,2307,sin_seleccion_diagnostico

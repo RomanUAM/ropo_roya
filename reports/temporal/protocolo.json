@@ -1,0 +1,21 @@
+{
+  "ausencias_finales": "Reales, confirmado por usuario. No se sustituyen ni aumentan en validación/prueba.",
+  "series": 2400,
+  "identidad": [
+    "Municipio",
+    "Parcela",
+    "Coordenada_X",
+    "Coordenada_Y"
+  ],
+  "horizonte": "Un muestreo adelante; roya y clima/fenología previos del mismo sitio. Mes objetivo conocido, topografía constante.",
+  "primera_observacion": "Inicialización excluida: no se inventa roya previa cero. Quedan23fechas.",
+  "split": "14/4/5 de23fechas elegibles (60.87/17.39/21.74), cortes acumulados redondeados al60%y80%; sin dividir una fecha.",
+  "evaluacion": "Principal: validación selecciona porMAE. Prueba final toda en cero: R2indefinido. Retrospectivos son diagnósticos, no nueva prueba independiente.",
+  "retrospectivos": "Entrena con6/8/10primeras fechas y evalúa las dos siguientes; diagnósticos sin selección de modelos.",
+  "aumento": "Bootstrap de bloques observados de hasta3registros dentro de cada serie train; centros de clases positivas se sobremuestrean hasta3veces su frecuencia, acotada por clase mayoritaria. No hay datos sintéticos nuevos ni muestras independientes adicionales.",
+  "preprocesado": "Imputador ajustado en train/aumento únicamente. Sin grafos/comunidades previos que utilizaron fechas futuras. Early stopping interno desactivado.",
+  "familia": "Primer control de regresión temporal HistGradientBoosting, pérdidas cuadrática/Poisson con ysin aumento; no reentrena todavía las cuatro arquitecturas multiclase.",
+  "objetivo": "Incidencia porcentual, no conteo de hojas. Poisson se usa como cuasipérdida.",
+  "ley_potencias": "Desbalance observado; no se ha establecido una ley de potencias.",
+  "limites": "Último bloque sin positivos no valida predicción de severidad. Evaluación a un paso usa mediciones reales previas actualizadas, no pronóstico recursivo de todo el bloque. Fechas1/16aproximadas."
+}
