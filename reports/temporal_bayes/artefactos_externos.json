@@ -1,0 +1,8 @@
+{
+  "archivo_privado": "Roya_Calendario_R2_Datos_Modelos_Privados.zip",
+  "sha256": "0e98b10ec134fd6c8abfd4ba3f35384e104655fbd90edb92661314d53b205276",
+  "bytes": 471087983,
+  "numero_archivos": 450,
+  "incluye_coordenadas": true,
+  "distribucion": "Privada. Conserva referencias; añade presencia temporal con ambas clases y cantidad entrenada sólo con positivos, RF/GP/LR aumentados y doce redes bayesianas. No se promueve automáticamente."
+}

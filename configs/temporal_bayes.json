@@ -1,0 +1,1 @@
+{"trees":180,"gp_population":200,"gp_generations":60,"bayes_epochs":60,"posterior_samples":100,"architectures":[[13,13,13],[13,13,13,13],[13,13,13,13,13]],"split_chronological":[0.6,0.2,0.2],"augmentation":"training_blocks_only"}

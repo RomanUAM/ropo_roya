@@ -9,7 +9,7 @@ st.title('Roya del café: presencia y cantidad')
 project=Path(__file__).resolve().parent
 advanced=project/'reports/avanzado'
 historical=project/'reports/calendario_r2'
-experiment=st.selectbox('Experimento',['Clases de roya → cuatro arquitecturas y Bayes','Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
+experiment=st.selectbox('Experimento',['Cascada temporal bayesiana (experimental)','Clases de roya → cuatro arquitecturas y Bayes','Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
 if (advanced/'redes_resultados.json').exists():
     with st.expander('Comparaciones previas: ACP, GAM y PIG',expanded=False):
         st.write('Cantidad:11,900positivos+100negativos de entrenamiento. Validación/prueba completas. Unidad:porcentaje; rango operativo0–40.')
@@ -30,7 +30,14 @@ with_probs=True
 stochastic=False
 seed=42
 gate_modal=True
-if experiment.startswith('Clases de roya'):
+if experiment.startswith('Cascada temporal'):
+    current=project/'reports/cascada_positivos'
+    st.warning('Ensayo en auditoría: prueba final sin positivos; no demuestra capacidad para estimar severidad futura.')
+    if (current/'validacion.csv').exists():st.dataframe(pd.read_csv(current/'validacion.csv'),hide_index=True)
+    if (current/'presencia_temporal.csv').exists():st.dataframe(pd.read_csv(current/'presencia_temporal.csv'),hide_index=True)
+    if (current/'AUDITORIA.json').exists():st.json(json.loads((current/'AUDITORIA.json').read_text()))
+    ready=(project/'runs/cascada_positivos/seleccion_antes_prueba.json').exists()
+elif experiment.startswith('Clases de roya'):
     family=st.selectbox('Arquitectura multiclase',['RF','LR','GP','MIXTA'])
     current=project/'reports/niveles_bayes'
     st.write('Clase 0: sin roya; clase 1: 1–3%; clase 2: 4–6%; se continúa hasta clase 12: 34–36%. Tres expertos y mezclador bayesiano inverso con contexto de comunidades.')
@@ -77,13 +84,16 @@ else:
     with st.expander('Cantidad vs clima SIMULADO, topografía y urbanismo'):
         if (historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv').exists():st.dataframe(pd.read_csv(historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv'),hide_index=True)
     ready=(project/'runs/calendario_r2/seleccion_antes_prueba.json').exists()
-st.info('Sólo filas existentes mediante fila_excel. Fecha 1/16 aproximada por quincena. Poisson estima una media positiva para todos; las rutas históricas conservan su detector previo.')
+st.info('Filas registradas mediante fila_excel. Fechas 1/16 aproximadas. La cascada ejecuta cantidad sólo ante presencia; negativos devuelven cero.')
 if not ready:st.info('Extraiga los artefactos privados en la raíz del proyecto y configureROYA_DATA_DIRsegúnREADME.')
 file=st.file_uploader('Registros existentesCSV',type=['csv'])
 if file is not None and st.button('Calcular'):
     try:
         data=pd.read_csv(file)
-        if experiment.startswith('Clases de roya'):
+        if experiment.startswith('Cascada temporal'):
+            from roya.cascada_positivos import predict
+            result=predict(data)
+        elif experiment.startswith('Clases de roya'):
             from roya.niveles_bayes import predict
             result=predict(data,family=family)
         elif experiment.startswith('Media Poisson'):

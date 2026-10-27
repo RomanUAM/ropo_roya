@@ -4,9 +4,9 @@ from scipy.special import softmax
 
 class GeneticOrdinal3:
     def __init__(self,population=200,generations=60,seed=42,parsimony=.0005):self.population=population;self.generations=generations;self.seed=seed;self.parsimony=parsimony
-    def fit(self,x,y):
+    def fit(self,x,y,sample_weight=None):
         from roya.compat.programacion_genetica_roya import BINARY,UNARY,evaluate,levels,size,paths,subtree,replace,expression
-        x=np.asarray(x,float);y=np.asarray(y,int);self.classes_=np.unique(y);self.n_features_in_=x.shape[1];rng=np.random.default_rng(self.seed);counts=np.bincount(y);weight=1/np.maximum(counts[y],1);weight/=weight.sum();mean=float(weight@y);variance=max(float(weight@((y-mean)**2)),1e-6);cache={};lo,hi=self.classes_[[0,-1]]
+        x=np.asarray(x,float);y=np.asarray(y,int);self.classes_=np.unique(y);self.n_features_in_=x.shape[1];rng=np.random.default_rng(self.seed);sw=np.ones(len(y)) if sample_weight is None else np.asarray(sample_weight,float);counts=np.bincount(y,weights=sw);weight=sw/np.maximum(counts[y],1);weight/=weight.sum();mean=float(weight@y);variance=max(float(weight@((y-mean)**2)),1e-6);cache={};lo,hi=self.classes_[[0,-1]]
         def terminal():return ('x',int(rng.integers(x.shape[1]))) if rng.random()<.8 else ('c',float(rng.uniform(-3,3)))
         def tree(depth):
             if depth<=1 or rng.random()<.25:return terminal()
@@ -32,9 +32,9 @@ class GeneticOrdinal3:
                 else:child=parent
                 assert levels(child)<=3;new.append(child)
             pop=new
-        self.tree_=pop[0];_,self.intercept_,self.slope_=cache[self.tree_];self.expression_=expression(self.tree_);self.levels_=levels(self.tree_);s=self.score_values(x);global_mean=float(s.mean());global_var=max(float(s.var()),.1);self.mean_=[];self.var_=[];self.prior_=[]
+        self.tree_=pop[0];_,self.intercept_,self.slope_=cache[self.tree_];self.expression_=expression(self.tree_);self.levels_=levels(self.tree_);s=self.score_values(x);global_mean=float(np.average(s,weights=sw));global_var=max(float(np.average((s-global_mean)**2,weights=sw)),.1);self.mean_=[];self.var_=[];self.prior_=[]
         for c in self.classes_:
-            v=s[y==c];n=len(v);a=n/(n+20);mu=a*float(v.mean())+(1-a)*global_mean;var=a*float(v.var())+(1-a)*global_var+a*(1-a)*(float(v.mean())-global_mean)**2;self.mean_.append(mu);self.var_.append(max(var,.05));self.prior_.append((n+.5)/(len(y)+.5*len(self.classes_)))
+            v=s[y==c];weights=sw[y==c];n=float(weights.sum());vmean=float(np.average(v,weights=weights));vvar=float(np.average((v-vmean)**2,weights=weights));a=n/(n+20);mu=a*vmean+(1-a)*global_mean;var=a*vvar+(1-a)*global_var+a*(1-a)*(vmean-global_mean)**2;self.mean_.append(mu);self.var_.append(max(var,.05));self.prior_.append((n+.5)/(sw.sum()+.5*len(self.classes_)))
         self.mean_=np.array(self.mean_);self.var_=np.array(self.var_);self.prior_=np.array(self.prior_);return self
     def score_values(self,x):
         from roya.compat.programacion_genetica_roya import evaluate

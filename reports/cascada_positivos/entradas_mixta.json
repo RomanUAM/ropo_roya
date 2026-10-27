@@ -1,0 +1,17 @@
+[
+  {
+    "familia": "RF",
+    "vista": "topografia",
+    "indice": 0
+  },
+  {
+    "familia": "GP",
+    "vista": "excel",
+    "indice": 1
+  },
+  {
+    "familia": "LR",
+    "vista": "topografia",
+    "indice": 0
+  }
+]

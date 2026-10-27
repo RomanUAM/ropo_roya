@@ -69,3 +69,13 @@ def run_niveles():
     from roya.analisis_niveles import run as analyze
     result=train();audit=analyze()
     return {'resultado':result,'auditoria':audit}
+
+def run_cascada_positivos():
+    """Presencia con ambas clases; cantidad exclusivamente con positivos reales."""
+    from roya.cascada_positivos import run,PRESENCE_OUT
+    if not (PRESENCE_OUT/'seleccion_presencia_temporal.json').exists():
+        from roya.temporal_bayes import run as train_presence
+        train_presence(presence_only=True)
+    result=run()
+    from roya.auditoria_cascada_positivos import run as audit
+    return {'resultado':result,'auditoria':audit()}

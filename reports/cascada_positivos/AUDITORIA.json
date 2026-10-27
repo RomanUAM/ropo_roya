@@ -1,0 +1,54 @@
+{
+  "software_verificado": true,
+  "modelos_expertos": 9,
+  "variantes_bayesianas": 12,
+  "arquitecturas_ocultas": [
+    [
+      13,
+      13,
+      13
+    ],
+    [
+      13,
+      13,
+      13,
+      13
+    ],
+    [
+      13,
+      13,
+      13,
+      13,
+      13
+    ]
+  ],
+  "t_1_t_2_observados": true,
+  "temporal_ordenado": true,
+  "OOF_causal": true,
+  "posterior_sin_duplicar_evidencia": true,
+  "cantidad_entrenada_solo_positivos": true,
+  "ceros_entrenamiento_cantidad": 0,
+  "positivos_entrenamiento_cantidad": 19824,
+  "inferencia_independiente_16": true,
+  "negativos_cascada_cero": true,
+  "modelo_elegido_validacion": "MIXTA_5x13",
+  "positivos_validacion": 199,
+  "positivos_prueba": 0,
+  "detector_temporal_elegido": {
+    "familia": "RF",
+    "TP_validacion": 199,
+    "FP_validacion": 199,
+    "FN_validacion": 0
+  },
+  "detector_historico": {
+    "modelo": "LR/ACP",
+    "sha256": "4334d65ce5262526c09167a8b110324f90e6007f80bce85a1b4458eeaad9a62b",
+    "protocolo": "50/20/30porcoordenada, no causal en eltiempo; se conserva como referencia diagnóstica"
+  },
+  "promocion_operativa": false,
+  "motivos": [
+    "Prueba final sin positivos: no valida severidad ni sensibilidad.",
+    "Validación reutilizada al corregir escala: resultados exploratorios."
+  ],
+  "limites": "Posterior variacional generalizado con cuasipérdida Poisson para porcentaje. Cuantiles de lambda, no intervalo predictivo calibrado de observaciones. Simulación histórica no recalibrada temporalmente."
+}

@@ -1,0 +1,10 @@
+{
+  "familia": "RF",
+  "umbral": 0.4500000000000001,
+  "FP_validacion": 199,
+  "FN_validacion": 0,
+  "TN": 9600,
+  "FP": 0,
+  "FN": 0,
+  "TP": 0
+}

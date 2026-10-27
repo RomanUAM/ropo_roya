@@ -1,0 +1,63 @@
+{
+  "config": {
+    "trees": 180,
+    "gp_population": 200,
+    "gp_generations": 60,
+    "bayes_epochs": 60,
+    "posterior_samples": 100,
+    "architectures": [
+      [
+        13,
+        13,
+        13
+      ],
+      [
+        13,
+        13,
+        13,
+        13
+      ],
+      [
+        13,
+        13,
+        13,
+        13,
+        13
+      ]
+    ],
+    "split_chronological": [
+      0.6,
+      0.2,
+      0.2
+    ],
+    "augmentation": "training_blocks_only"
+  },
+  "clases": 13,
+  "series": 2400,
+  "fechas_elegibles": 22,
+  "cortes": [
+    13,
+    5,
+    4
+  ],
+  "filas": [
+    31200,
+    12000,
+    9600
+  ],
+  "aumento_filas": 102861,
+  "rezagos": "t-1 y t-2 medidos, mismo municipio/parcela/coordenada; se excluyen dos fechas iniciales sin historia completa.",
+  "expertos": "Tres RF, tres GP ordinales y tres LR multiclase; todos nuevos, aumentados sólo en train y en cada fold temporal. Calendario, incidencia previa y datos de cada vista.",
+  "OOF": "Ventanas expansivas; cada bloque OOF se predice con fechas estrictamente anteriores. Mezcladores aprenden sólo en filas OOF train.",
+  "entradas": "Topografía estática y urbanismo; Excel/simulación en el origen t-1; nunca se utilizan clima real o fenología futuros. No se usan comunidades climáticas ajustadas con todo el año.",
+  "mezcladores": "Variacionales: normales diagonales independientes para TODOS los pesos y sesgos; arquitecturas 3x13,4x13,5x13. Objetivo cuasi-Poisson+KL/N; estimación de incidencia porcentual, no conteos.",
+  "ajuste_bayes": "Expertos aumentados; mezclador sobre OOF original sin duplicar observaciones para no aumentar artificialmente la evidencia del posterior.",
+  "incertidumbre": "Cuantiles Monte Carlo de lambda bajo posterior variacional aproximado; no intervalos predictivos de observaciones ni cobertura calibrada.",
+  "mixta": "Mejor vista de cada familia por log-loss OOF train; no usa prueba.",
+  "evaluacion": "12 combinaciones:4arquitecturas x3redes bayesianas. Selección por MAE validación. Prueba final toda cero, R2indefinido. Se conservan ceros reales.",
+  "horizonte": "Un paso con observaciones previas reales actualizadas; no pronóstico recursivo del bloque completo. Fechas aproximadas.",
+  "aumento": "Bloques observados repetidos, no individuos nuevos. No se impone ley de potencias. El mismo aumento se usa en cada familia.",
+  "detector_temporal": "Calibrador bayesiano binario ajustado en OOF causal de los expertos aumentados; umbral por suma de tasas FPR+FNR y templado por validación. El detector histórico se conserva sólo como referencia diagnóstica, no se usa como prueba cronológica.",
+  "cascada": "Detector temporal y cantidad se eligen por separado en validación: detector por FPR+FNR, cantidad por MAE. Se preserva detector histórico como referencia diagnóstica.",
+  "escala_mezclador": "Probabilidades0..1 sin amplificar clases raras; estandarizar sólo lag1,lag2,mes_sen,mes_cos. Referencia inicial conservada; validación histórica reutilizada, comparación exploratoria."
+}
