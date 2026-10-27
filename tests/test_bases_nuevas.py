@@ -46,6 +46,10 @@ def test_independent_models_on_unseen_sites_dates_and_without_target(trained, tm
         pd.testing.assert_frame_equal(result,predict(trained,poisoned,detector=family,regressor='log1p_lineal'))
         outputs.append(result)
     path=save(trained,tmp_path/'candidate')
+    assert (path/'informe/INFORME.pdf').exists()
+    assert (path/'evaluacion_real_predicha.csv').exists()
+    from pypdf import PdfReader
+    assert len(PdfReader(path/'informe/INFORME.pdf').pages)>=15
     pd.testing.assert_frame_equal(outputs[0],predict(load_model(path),new,detector='RF',regressor='log1p_lineal'))
     with pytest.raises(FileExistsError):save(trained,path)
 
@@ -58,6 +62,12 @@ def test_quantity_models_positive_only_and_temporal_holdout_not_used_for_selecti
     assert len(trained['matrices'])==8
     assert len(trained['quantity_metrics'])==20
     assert len(trained['cascade_metrics'])==80
+    for row in trained['cascade_metrics']:
+        from roya.bases_nuevas import scores
+        ev=trained['evaluation'];ev=ev[ev.conjunto.eq(row['conjunto'])]
+        gate=ev['probabilidad_'+row['detector']]>=trained['detectors'][row['detector']]['threshold']
+        p=np.where(gate,ev['nivel_'+row['modelo']],0)
+        assert scores(ev.real.to_numpy(),p)=={k:row[k] for k in ('n','MAE','RMSE','R2')}
 
 
 def test_validation_of_new_files_and_leakage_columns():

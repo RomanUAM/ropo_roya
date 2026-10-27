@@ -458,6 +458,11 @@ def train(frame, contract, config=None, policies=None, simulation=None):
     z_all = np.column_stack([z, probabilities_all])
     z_train = np.column_stack([z[positive], *[oof[f][positive] for f in FAMILIES[:3]]])
     regressors, quantity_rows, cascade_rows = {}, [], []
+    evaluation=frame.loc[va|te,['_fecha']].reset_index(drop=True).rename(columns={'_fecha':'fecha'})
+    evaluation['conjunto']=np.where(va[va|te],'validacion','prueba')
+    evaluation['real']=y[va|te]
+    for fam in FAMILIES:
+        evaluation['probabilidad_'+fam]=detectors[fam]['model'].predict_proba(probability_tensor(prob[fam][va|te]),context(frame.loc[va|te]))[:,1]
     notices = []
     for name in REGRESSORS:
         # Armónicas incluyen dos órdenes de Fourier de mes y día explícitos.
@@ -470,6 +475,7 @@ def train(frame, contract, config=None, policies=None, simulation=None):
         notices.extend(dict(modelo=name, aviso=str(w.message)) for w in caught)
         regressors[name] = reg
         estimate = np.clip(reg.predict(all_z), 0, contract.max_level)
+        evaluation['nivel_'+name]=estimate[va|te]
         for part, ix in [('validacion', va), ('prueba', te)]:
             quantity_rows.append(dict(modelo=name, conjunto=part, **scores(y[ix & (y>0)], estimate[ix & (y>0)])))
             for fam in FAMILIES:
@@ -495,7 +501,8 @@ def train(frame, contract, config=None, policies=None, simulation=None):
     return dict(kind='roya_portable_v1', contract=contract, models=models, mixture=entries, detectors=detectors,
                 quantity_input=quantity_input, regressors=regressors, audit=audit, ranges=ranges,
                 sites=set(map(tuple, frame.loc[tr,list(contract.keys)].to_numpy())),
-                matrices=binary_rows, quantity_metrics=quantity_rows, cascade_metrics=cascade_rows, simulation_reference=reference)
+                matrices=binary_rows, quantity_metrics=quantity_rows, cascade_metrics=cascade_rows, simulation_reference=reference,
+                evaluation=evaluation)
 
 
 def predict(bundle, frame, detector=None, regressor=None, history=None, policies=None, simulation=None, history_policies=None):
@@ -581,6 +588,10 @@ def save(bundle, destination):
     (destination/'protocolo.json').write_text(json.dumps(bundle['audit'], ensure_ascii=False, indent=2, allow_nan=False)+'\n')
     for name, key in [('matrices','matrices'),('cantidad','quantity_metrics'),('cascadas','cascade_metrics')]:
         pd.DataFrame(bundle[key]).to_csv(destination/(name+'.csv'), index=False)
+    if 'evaluation' in bundle:
+        bundle['evaluation'].to_csv(destination/'evaluacion_real_predicha.csv',index=False)
+        from roya.informe_base import build
+        build(bundle,destination)
     return destination
 
 

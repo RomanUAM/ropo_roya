@@ -119,7 +119,7 @@ def page(project):
             bundle=st.session_state.get('roya_new_bundle')
             if bundle is not None:
                 st.caption('Última versión entrenada: '+Path(st.session_state['roya_last_version']).name+'. Cambiar el archivo o las opciones no reentrena hasta pulsar el botón.')
-                show_results(bundle)
+                show_results(bundle,Path(st.session_state['roya_last_version']))
         except (ValueError,KeyError,TypeError) as e:
             st.error(str(e))
         return
@@ -138,7 +138,7 @@ def page(project):
         contract=bundle['contract']
         with st.expander('Columnas requeridas y evaluación de la versión'):
             st.json(bundle['audit']['contrato'])
-            show_results(bundle)
+            show_results(bundle,folder)
         upload=st.file_uploader('Datos nuevos de una o varias zonas',type=['xlsx','csv'],key='prediction_data')
         supplemental=st.file_uploader('Variables complementarias por sitio o sitio y fecha (opcional)',type=['xlsx','csv'],key='prediction_context')
         hist=st.file_uploader('Historial observado para t-1 y t-2',type=['xlsx','csv'],key='prediction_history') if contract.temporal else None
@@ -170,7 +170,7 @@ def page(project):
         st.error(str(e))
 
 
-def show_results(bundle):
+def show_results(bundle,folder=None):
     st.warning('Versión experimental. La validación temporal de esta base no acredita transferencia a otras zonas ni uso operativo. Las probabilidades requieren comprobar calibración.')
     for p in bundle['audit']['particion']:
         if p['conjunto']!='train' and (p['positivos']==0 or p['positivos']==p['filas']):
@@ -186,3 +186,29 @@ def show_results(bundle):
         st.download_button('Descargar comparación de combinaciones',cascades.to_csv(index=False).encode(),file_name='cascadas_comparacion.csv')
     with st.expander('Protocolo y observaciones del entrenamiento'):
         st.json(bundle['audit'])
+    with st.expander('Informe PDF y gráficas de real frente a predicho',expanded=True):
+        if folder is None:
+            st.info('Guarde la versión para generar su informe.')
+            return
+        report=Path(folder)/'informe'
+        if not (report/'INFORME.pdf').exists():
+            if 'evaluation' in bundle:
+                if st.button('Generar el informe de esta versión'):
+                    from roya.informe_base import build
+                    with st.spinner('Generando figuras con la evaluación guardada…'):build(bundle,folder)
+            else:
+                st.info('Esta versión anterior no guardó los pares reales y predichos. Sus métricas se conservan; para producir estas gráficas necesita reentrenarse con la base original. No se fabrican puntos desde R² o MAE.')
+        if (report/'INFORME.pdf').exists():
+            st.download_button('Descargar informe PDF completo',(report/'INFORME.pdf').read_bytes(),file_name='Roya_Informe_Version.pdf',mime='application/pdf')
+            from roya.panel_informes import archive
+            st.download_button('Descargar todas las gráficas de esta versión',archive(report),file_name='Roya_Graficas_Version.zip',mime='application/zip')
+            scope=st.selectbox('Ámbito de la gráfica',['Cascada completa','Cantidad entre positivos reales','Matrices de confusión','Arquitectura','Errores y evolución'])
+            split=st.selectbox('Bloque de evaluación',['validacion','prueba'])
+            if scope=='Cascada completa':
+                family=st.selectbox('Detector de la comparación',['RF','LR','GP','MIXTA'])
+                image=report/f'real_predicho_{split}_{family}.png'
+            elif scope=='Cantidad entre positivos reales':image=report/f'positivos_reales_{split}.png'
+            elif scope=='Matrices de confusión':image=report/f'matrices_{split}.png'
+            elif scope=='Arquitectura':image=report/'arquitectura.png'
+            else:image=report/'errores_y_evolucion.png'
+            if image.exists():st.image(str(image),caption=image.name)

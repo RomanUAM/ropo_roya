@@ -1,0 +1,14 @@
+{
+  "pruebas": "46 passed",
+  "galeria_historica": "AppTest OK, sin modelos privados",
+  "pdf_historicos": 6,
+  "archivos_png_historicos": 29,
+  "nuevo_informe": "15 páginas verificadas visualmente con base sintética",
+  "paneles_nueva_version": {
+    "cascada_completa": 80,
+    "positivos_reales": 20
+  },
+  "matrices_nueva_version": 8,
+  "calidad_cientifica": "No se reentrenó la base real; la validación del generador usa datos sintéticos",
+  "puntos_de_graficas": "Proceden de pares reales/predichos guardados, no de métricas agregadas"
+}

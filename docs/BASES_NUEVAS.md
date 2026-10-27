@@ -186,6 +186,37 @@ para decimales: clase 1 es `(0,3]`, clase 2 `(3,6]`, etc. Si un detector positiv
 se combina con un regresor que devuelve cero, se señala esa inconsistencia y no
 se le asigna clase 0. No equivale a una ausencia confirmada.
 
+## Informes, figuras y evidencia por versión
+
+La sección global **Informes y gráficas** permite revisar los seis PDF y los
+archivos de figuras históricos del repositorio sin necesitar los pesos privados.
+Incluye las comparaciones previas de cuatro arquitecturas, regresiones con
+variables completas/ACP, correlaciones, matrices, calendarios y protocolos.
+La descarga completa conserva estos experimentos separados por carpeta.
+
+Cada entrenamiento nuevo guarda además `evaluacion_real_predicha.csv`, con la
+respuesta observada, las probabilidades de los cuatro detectores y los diez
+niveles estimados en validación y prueba. A partir de esa evidencia genera
+automáticamente `informe/INFORME.pdf` y figuras exportables. El informe incluye:
+
+- Arquitectura, población y protocolo de la versión, reglas de sustitución y
+  límites de la evaluación.
+- Ocho matrices de confusión: cuatro detectores en validación y prueba.
+- Ochenta paneles de real frente a predicho de cascadas completas: cuatro
+  detectores por diez estimadores por dos bloques. Incluyen las filas negativas
+  y los errores del detector.
+- Veinte paneles del nivel entre positivos reales: diez estimadores por dos
+  bloques. Aíslan la cantidad y no equivalen a la cascada completa.
+- Distribución del error y medias observadas/estimadas por fecha para la
+  combinación seleccionada, o una referencia identificada si no hubo selección.
+
+Los archivos de figuras son mosaicos con varios paneles. Los conteos de paneles
+no son conteos de archivos independientes. El PDF y las figuras pueden
+descargarse desde el panel de la versión. No se genera una nube artificial de
+puntos a partir de métricas agregadas. Una versión antigua sin pares guardados
+conserva sus métricas, pero necesita reevaluación o reentrenamiento con su base
+para producir esta visualización nueva.
+
 Los modelos se guardan localmente con datos de trazabilidad en un paquete
 `modelo.joblib`, `protocolo.json`, `matrices.csv`, `cantidad.csv`, `cascadas.csv`.
 Sólo deben cargarse paquetes de confianza: un archivo joblib puede ejecutar código.

@@ -7,7 +7,11 @@ import streamlit as st
 st.set_page_config(page_title='Roya: presencia y cantidad',layout='wide')
 st.title('Roya del café: presencia y cantidad')
 project=Path(__file__).resolve().parent
-workspace=st.sidebar.radio('Área de trabajo',['Bases nuevas','Experimentos históricos'])
+workspace=st.sidebar.radio('Área de trabajo',['Bases nuevas','Informes y gráficas','Experimentos históricos'])
+if workspace=='Informes y gráficas':
+    from roya.panel_informes import page
+    page(project)
+    st.stop()
 if workspace=='Bases nuevas':
     from roya.panel_bases import page
     page(project)

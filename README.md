@@ -132,6 +132,15 @@ La ruta anterior `temporal_bayes` con cantidad incondicional se conserva como re
 La primera etapa conserva cuatro detectores temporales seleccionables: RF (tres bosques), LR (tres logísticas), GP (tres modelos de programación genética) y MIXTA (una vista de cada familia). Todos fusionan probabilidades con su propio modelo bayesiano binario; Automático usa la selección de validación (RF). El selector no cambia el estimador de cantidad. Ejemplo: `roya predecir-excel entrada.xlsx salida.csv --presencia GP`. Comparar las matrices de presencia no equivale a haber validado las cuatro cascadas completas: los resultados completos publicados corresponden al detector automático.
 # Bases nuevas (0.10.0)
 
+**Informes y gráficas:** el menú lateral reúne todos los PDF, figuras,
+tablas y protocolos históricos, con descarga individual o completa. No requiere
+los pesos privados. Cada versión nueva guarda los pares reales/predichos de
+validación y prueba y genera un PDF con matrices, arquitectura, evolución,
+errores y comparaciones de los diez estimadores con los cuatro detectores.
+Los ámbitos de cascada completa y cantidad entre positivos reales se presentan
+por separado. Las versiones antiguas que no guardaron predicciones no generan
+puntos artificiales: necesitan reevaluación o reentrenamiento con su base.
+
 **Abrir en Mac:** descargue y descomprima este repositorio y abra
 `Abrir_Roya.command`. Se requiere Python 3.11 o posterior; la primera ejecución
 instala las dependencias y abre la aplicación en el navegador. Las siguientes
