@@ -32,10 +32,19 @@ seed=42
 gate_modal=True
 if experiment.startswith('Cascada temporal'):
     current=project/'reports/cascada_positivos'
+    st.caption('Excel con las mismas columnas: sitios y fechas catalogados. Fechas nuevas requieren actualizar historial y simulación. No se ignoran valores modificados.')
     st.warning('Ensayo en auditoría: prueba final sin positivos; no demuestra capacidad para estimar severidad futura.')
     if (current/'validacion.csv').exists():st.dataframe(pd.read_csv(current/'validacion.csv'),hide_index=True)
     if (current/'presencia_temporal.csv').exists():st.dataframe(pd.read_csv(current/'presencia_temporal.csv'),hide_index=True)
-    if (current/'AUDITORIA.json').exists():st.json(json.loads((current/'AUDITORIA.json').read_text()))
+    if (current/'REPORTE.pdf').exists():st.download_button('Descargar reporte con gráficas y arquitectura',(current/'REPORTE.pdf').read_bytes(),file_name='Roya_Cascada_Reporte.pdf')
+    with st.expander('Matrices de confusión por arquitectura'):
+        for filename in ['matrices_validacion.png','matrices_prueba.png']:
+            if (current/filename).exists():st.image(str(current/filename))
+    with st.expander('Arquitectura del sistema y la cascada'):
+        for filename in ['arquitectura_sistema.png','arquitectura.png']:
+            if (current/filename).exists():st.image(str(current/filename))
+    with st.expander('Auditoría y límites'):
+        if (current/'AUDITORIA.json').exists():st.json(json.loads((current/'AUDITORIA.json').read_text()))
     ready=(project/'runs/cascada_positivos/seleccion_antes_prueba.json').exists()
 elif experiment.startswith('Clases de roya'):
     family=st.selectbox('Arquitectura multiclase',['RF','LR','GP','MIXTA'])
@@ -84,15 +93,17 @@ else:
     with st.expander('Cantidad vs clima SIMULADO, topografía y urbanismo'):
         if (historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv').exists():st.dataframe(pd.read_csv(historical/'correlaciones_cantidad_simulado_topografia_urbanismo.csv'),hide_index=True)
     ready=(project/'runs/calendario_r2/seleccion_antes_prueba.json').exists()
-st.info('Filas registradas mediante fila_excel. Fechas 1/16 aproximadas. La cascada ejecuta cantidad sólo ante presencia; negativos devuelven cero.')
+st.info('La ruta activa acepta Excel/CSV del catálogo sin ID interno. Las rutas históricas requieren fila_excel. Fechas 1/16 aproximadas; en cascada los negativos devuelven cero.')
 if not ready:st.info('Extraiga los artefactos privados en la raíz del proyecto y configureROYA_DATA_DIRsegúnREADME.')
-file=st.file_uploader('Registros existentesCSV',type=['csv'])
+file=st.file_uploader('Archivo Excel o CSV',type=['csv','xlsx'])
 if file is not None and st.button('Calcular'):
     try:
-        data=pd.read_csv(file)
+        from roya.entrada_excel import read_input
+        data=read_input(file)
         if experiment.startswith('Cascada temporal'):
             from roya.cascada_positivos import predict
-            result=predict(data)
+            from roya.entrada_excel import predict_excel
+            result=predict(data) if list(data.columns)==['fila_excel'] else predict_excel(data)
         elif experiment.startswith('Clases de roya'):
             from roya.niveles_bayes import predict
             result=predict(data,family=family)

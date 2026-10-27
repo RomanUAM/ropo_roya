@@ -1,0 +1,5 @@
+arquitectura,conjunto,TN,FP,FN,TP
+RF,prueba,9600,0,0,0
+LR,prueba,8800,800,0,0
+GP,prueba,9600,0,0,0
+MIXTA,prueba,9600,0,0,0

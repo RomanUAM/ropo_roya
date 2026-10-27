@@ -1,0 +1,4 @@
+bloque,desde,hasta,momentos,filas,positivos,ceros
+Entrenamiento,2024-10-01,2025-04-01,13,31200,19824,11376
+Validación,2025-04-16,2025-06-16,5,12000,199,11801
+Prueba,2025-07-01,2025-08-16,4,9600,0,9600

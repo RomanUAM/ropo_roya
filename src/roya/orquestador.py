@@ -78,4 +78,7 @@ def run_cascada_positivos():
         train_presence(presence_only=True)
     result=run()
     from roya.auditoria_cascada_positivos import run as audit
-    return {'resultado':result,'auditoria':audit()}
+    checked=audit()
+    from roya.reporte_cascada import run as report
+    report()
+    return {'resultado':result,'auditoria':checked}

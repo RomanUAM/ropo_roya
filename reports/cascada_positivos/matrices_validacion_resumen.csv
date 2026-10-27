@@ -1,0 +1,5 @@
+arquitectura,conjunto,TN,FP,FN,TP
+RF,validacion,11602,199,0,199
+LR,validacion,11594,207,0,199
+GP,validacion,11601,200,0,199
+MIXTA,validacion,11600,201,3,196

@@ -1,0 +1,16 @@
+{
+  "version": "0.9",
+  "graficas": [
+    "arquitectura.png",
+    "doce_variantes.png",
+    "confusion_presencia.png",
+    "real_predicho_persistencia.png",
+    "evolucion_temporal.png",
+    "matrices_validacion.png",
+    "matrices_prueba.png",
+    "arquitectura_sistema.png",
+    "cascada_validacion.png"
+  ],
+  "publicacion": "Sólo figuras y métricas agregadas; datos y pesos fuera de Git.",
+  "seleccion": "MIXTA_5x13"
+}

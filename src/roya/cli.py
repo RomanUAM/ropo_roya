@@ -10,6 +10,8 @@ def main():
     report=sub.add_parser('informe');report.add_argument('--out',default='runs/calendario_r2')
     stack=sub.add_parser('entrenar-acp-probabilidades');stack.add_argument('--config');stack.add_argument('--out')
     neural=sub.add_parser('entrenar-tres-redes');neural.add_argument('--config');neural.add_argument('--out')
+    ex=sub.add_parser('predecir-excel');ex.add_argument('input');ex.add_argument('output')
+    sub.add_parser('reporte-cascada')
     sub.add_parser('entrenar-temporal-bayes');sub.add_parser('auditar-temporal-bayes')
     tb=sub.add_parser('predecir-temporal-bayes');tb.add_argument('input');tb.add_argument('output');tb.add_argument('--detector',choices=['temporal','historico'],default='temporal')
     sub.add_parser('ensayo-temporal')
@@ -23,7 +25,13 @@ def main():
     advanced=sub.add_parser('predecir-avanzado');advanced.add_argument('input');advanced.add_argument('output');advanced.add_argument('--ruta',choices=['tres_redes','acp_probabilidades'],default='tres_redes');advanced.add_argument('--fusion');advanced.add_argument('--arquitectura',default='LR');advanced.add_argument('--metodo')
     pred=sub.add_parser('predecir');pred.add_argument('input');pred.add_argument('output');pred.add_argument('--representacion',choices=['completas','ACP'],default='completas');pred.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF');pred.add_argument('--metodo');pred.add_argument('--estocastico',action='store_true');pred.add_argument('--seed',type=int,default=42);pred.add_argument('--out',default='runs/calendario_r2')
     args=parser.parse_args()
-    if args.action=='entrenar-temporal-bayes':
+    if args.action=='predecir-excel':
+        from roya.entrada_excel import predict_excel
+        predict_excel(args.input).to_csv(args.output,index=False)
+    elif args.action=='reporte-cascada':
+        from roya.reporte_cascada import run
+        run()
+    elif args.action=='entrenar-temporal-bayes':
         from roya.orquestador import run_cascada_positivos
         run_cascada_positivos()
     elif args.action=='auditar-temporal-bayes':
