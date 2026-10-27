@@ -1,0 +1,1 @@
+{"seed":42,"bin_width":3,"trees":180,"gp_population":200,"gp_generations":60,"families":["RF","LR","GP","MIXTA"],"split_sitios":[0.5,0.2,0.3],"bayes_smoothing":20}

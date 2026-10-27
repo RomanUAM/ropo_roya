@@ -1,0 +1,1 @@
+{"seed":42,"threshold_overlay":0.1,"population":200,"generations":200,"models":["logistica","gompertz","hill"],"objective":"(1-R2)+MAE/SD","split_sitios":[0.5,0.2,0.3]}

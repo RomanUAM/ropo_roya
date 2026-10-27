@@ -1,0 +1,165 @@
+{
+  "protocolo": {
+    "config": {
+      "seed": 42,
+      "max_components": 6,
+      "neighbors": 20,
+      "threshold": 0.3,
+      "nodos": "coordenadas_unicas",
+      "probabilidad": "mismo_regimen_latente_GMM",
+      "target_en_grafos": false
+    },
+    "notas": {
+      "coordenadas": 2200,
+      "filas_originales": 57600,
+      "coordenadas_topografia_conflictiva": 200,
+      "pares_coordenada_fecha_clima_conflictivo": 4800,
+      "agregacion": "Mediana por coordenada/fecha; orientación media circular. Se conservan indicadores de conflicto. No se resuelve identidad física por promedio.",
+      "fenologia": "Seis banderas originales independientes conservadas como proporción entre observaciones coincidentes; atributos, no entradas del régimen climático."
+    },
+    "nodos_por_particion": {
+      "train": 1100,
+      "prueba": 660,
+      "validacion": 440
+    },
+    "evento_arista": "Probabilidad de co-pertenencia a un mismo régimen latente de la capa y tiempo, no igualdad exacta de valores continuos ni probabilidad de infección",
+    "formula": "p_ij(t)=sum_c q_ic(t)*q_jc(t), con q posterior GMM. Independencia condicional de asignaciones entre nodos, sin calibración meteorológica.",
+    "estimacion": "GMM de 1 a 6 componentes por BIC heurístico, ajustado sólo con coordenadas train; escala train. Una mezcla fija por capa conserva etiquetas de régimen entre fechas. No es Louvain ni una red neuronal.",
+    "capas": {
+      "topografia": "Estática, salvo nuevas mediciones físicas",
+      "simulacion": "365 fechas diarias, variables temperatura,lluvia",
+      "excel": "24 fechas observadas aproximadas; sólo clima real en aristas, fenología como atributos"
+    },
+    "cobertura_simulada": {
+      "temperatura": 1.0,
+      "humedad_relativa": 0.0027397260273972603,
+      "lluvia": 1.0
+    },
+    "esparsificacion": "20 vecinos más próximos en características estandarizadas de la misma capa/fecha; conservar p>=0.30, unión simétrica. Se puede consultar p de cualquier par; arco omitido no significa probabilidad cero.",
+    "faltantes": "Nodo sin clima completo no participa en esa fecha. Humedad simulada sin serie completa excluida, no inventada.",
+    "objetivo": "No se utiliza incidencia de roya para construir nodos, pesos o regímenes. No se modifica ni reentrena el predictor anterior.",
+    "limites": "Redes descriptivas con todos los nodos. Fit por sitio train y todas las fechas train: no validación temporal prospectiva. Antes de predictor: ablar rasgos inductivos sólo hacia nodos train, sin etiquetas/targets de validación/prueba.",
+    "fuentes": {
+      "geografia_roya/base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+      "simulacion": "44816520dfda9277c4332b7821d948d99e770477c780a2ef1db8773fc7dea001"
+    }
+  },
+  "modelos": {
+    "topografia": {
+      "componentes": 6,
+      "n_train_completo": 1100,
+      "n_ajuste": 1100,
+      "BIC": [
+        {
+          "componentes": 1,
+          "BIC": 4848.369227664253
+        },
+        {
+          "componentes": 2,
+          "BIC": -15672.200010572835
+        },
+        {
+          "componentes": 3,
+          "BIC": -21548.486932802938
+        },
+        {
+          "componentes": 4,
+          "BIC": -26759.588604325814
+        },
+        {
+          "componentes": 5,
+          "BIC": -27850.323158290033
+        },
+        {
+          "componentes": 6,
+          "BIC": -31309.35235681967
+        }
+      ]
+    },
+    "simulacion": {
+      "componentes": 5,
+      "n_train_completo": 401500,
+      "n_ajuste": 30000,
+      "BIC": [
+        {
+          "componentes": 1,
+          "BIC": 169967.84149048704
+        },
+        {
+          "componentes": 2,
+          "BIC": 146888.3532555108
+        },
+        {
+          "componentes": 3,
+          "BIC": 132221.7207534692
+        },
+        {
+          "componentes": 4,
+          "BIC": 131725.23690112506
+        },
+        {
+          "componentes": 5,
+          "BIC": 125344.45604586534
+        },
+        {
+          "componentes": 6,
+          "BIC": 126897.5394008742
+        }
+      ]
+    },
+    "excel": {
+      "componentes": 6,
+      "n_train_completo": 26400,
+      "n_ajuste": 26400,
+      "BIC": [
+        {
+          "componentes": 1,
+          "BIC": 12924.311267287767
+        },
+        {
+          "componentes": 2,
+          "BIC": -93975.40979327628
+        },
+        {
+          "componentes": 3,
+          "BIC": -158554.70572773603
+        },
+        {
+          "componentes": 4,
+          "BIC": -174340.26788550417
+        },
+        {
+          "componentes": 5,
+          "BIC": -204390.8754845407
+        },
+        {
+          "componentes": 6,
+          "BIC": -222628.00720717956
+        }
+      ]
+    }
+  },
+  "resumen_por_capa": [
+    {
+      "capa": "excel",
+      "instantes": 24,
+      "aristas_promedio": 45006.4583333333,
+      "retencion_media": 0.8011525066,
+      "aislados_promedio": 0.0
+    },
+    {
+      "capa": "simulacion",
+      "instantes": 365,
+      "aristas_promedio": 26118.7561643836,
+      "retencion_media": 0.0200599036,
+      "aislados_promedio": 0.0054794521
+    },
+    {
+      "capa": "topografia",
+      "instantes": 1,
+      "aristas_promedio": 26550.0,
+      "retencion_media": null,
+      "aislados_promedio": 0.0
+    }
+  ]
+}

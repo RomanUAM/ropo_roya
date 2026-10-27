@@ -1,0 +1,33 @@
+{
+  "config": {
+    "seed": 42,
+    "threshold_overlay": 0.1,
+    "population": 200,
+    "generations": 200,
+    "models": [
+      "logistica",
+      "gompertz",
+      "hill"
+    ],
+    "objective": "(1-R2)+MAE/SD",
+    "split_sitios": [
+      0.5,
+      0.2,
+      0.3
+    ]
+  },
+  "grafo": "Promedio aritmético de probabilidades de tres capas en la MISMA fecha; descartar sólo promedios<0.10. Se recalculan todos los pares desde posteriors, no se toma arco esparso omitido como cero.",
+  "comunidades": "Louvain ponderado sólo sobre 1,100 coordenadas train; validación/prueba se asignan por media de vínculos >=0.1 a comunidades train. Alineación temporal por máximo solapamiento/Hungarian sólo train; topografía fija.",
+  "entradas": "Comunidades categóricas de tres capas y superpuesta, mes y quincena; one-hot train, sin códigos ordinales ni incidencia vecina.",
+  "objetivo": "Porcentaje 0..40. Todas las filas y todos los ceros; misma partición 50/20/30 por sitio.",
+  "regresiones": [
+    "40*sigmoid(B beta)",
+    "40*exp(-exp(-B beta))",
+    "40*softplus(B beta)^2/(1+softplus(B beta)^2)"
+  ],
+  "genetico": "Población 200, 200 generaciones. J=(1-R2_train)+MAE_train/SD_train; archivo no dominado en R2 y MAE. No se garantiza óptimo global ni ambos óptimos a la vez.",
+  "seleccion": "Evaluar frontera train en validación con J_val=(1-R2_val)+MAE_val/SD_val. Congelar selección antes de prueba.",
+  "control": "Promedio mensual train; media global train; referencia Poisson anterior como comparación histórica. Test reutilizado: exploratorio.",
+  "limites": "Probabilidades GMM de co-régimen, no contagio ni meteorología calibrada. Mes/ceros tardíos y HR simulada incompleta. Capas se ajustaron con características train de todo el año; no evaluación futura.",
+  "fuente": "9215fe277d11f4ed322dd57e3a1fea83a60d83ba3e33ad8b58d4904c9084471f"
+}

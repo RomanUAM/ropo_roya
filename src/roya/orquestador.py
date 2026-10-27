@@ -62,3 +62,10 @@ def run_poisson():
     from roya.analisis_poisson import run as analyze
     result=train();audit=analyze()
     return {'resultado':result,'auditoria':audit}
+
+def run_niveles():
+    """Reetiqueta, entrena expertos multiclase, evalúa y conserva evidencia previa."""
+    from roya.niveles_bayes import run as train
+    from roya.analisis_niveles import run as analyze
+    result=train();audit=analyze()
+    return {'resultado':result,'auditoria':audit}

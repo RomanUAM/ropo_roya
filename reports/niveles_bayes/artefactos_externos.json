@@ -1,0 +1,8 @@
+{
+  "archivo_privado": "Roya_Calendario_R2_Datos_Modelos_Privados.zip",
+  "sha256": "7ef28ca1e5df1a62bb42b1aecdd814009bc57427e49a084f99fd8ed7e935c17c",
+  "bytes": 297382583,
+  "numero_archivos": 324,
+  "incluye_coordenadas": true,
+  "distribucion": "Privada; conserva referencias y añade estados de grafos dinámicos, comunidades inductivas, regresiones genéticas y cuatro arquitecturas multiclase con Bayes inverso. Cachés kNN diarios reconstruibles desde estados compactos."
+}

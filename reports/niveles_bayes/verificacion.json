@@ -1,0 +1,14 @@
+{
+  "aprobado": true,
+  "clases": 13,
+  "n_train": 28728,
+  "n_validacion": 11520,
+  "n_prueba": 17352,
+  "inferencia_independiente_por_arquitectura": 52,
+  "posteriors_normalizados_y_matrices_completas": true,
+  "coordenadas_disjuntas_en_5_folds": true,
+  "GP_arboles_max3_niveles": true,
+  "clase_12_train": 3,
+  "elegida_por_validacion": "MIXTA",
+  "limite": "No afirma calibración, independencia entre fuentes ni generalización temporal futura"
+}

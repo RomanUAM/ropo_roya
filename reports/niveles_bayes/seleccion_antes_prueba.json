@@ -1,0 +1,50 @@
+{
+  "RF": {
+    "temperatura": 0.1,
+    "peso_grupos": 1.0,
+    "n": 11520,
+    "exactitud": 0.6665798611111111,
+    "F1_macro": 0.10769130262026358,
+    "F1_ponderado": 0.6238134230107808,
+    "log_loss": 1.0465115562005227,
+    "Brier_multiclase": 0.4377346686558355,
+    "kappa_cuadratica": 0.24199578308231762,
+    "MAE_clases": 0.8153645833333333
+  },
+  "LR": {
+    "temperatura": 0.1,
+    "peso_grupos": 1.0,
+    "n": 11520,
+    "exactitud": 0.6673611111111111,
+    "F1_macro": 0.10787638871600856,
+    "F1_ponderado": 0.6246497658859488,
+    "log_loss": 0.99523415781241,
+    "Brier_multiclase": 0.4153683179713388,
+    "kappa_cuadratica": 0.24318966149307852,
+    "MAE_clases": 0.8141493055555555
+  },
+  "GP": {
+    "temperatura": 0.1,
+    "peso_grupos": 1.0,
+    "n": 11520,
+    "exactitud": 0.6050347222222222,
+    "F1_macro": 0.06640098979198378,
+    "F1_ponderado": 0.4713011645604436,
+    "log_loss": 1.2873014963922964,
+    "Brier_multiclase": 0.5567716327207362,
+    "kappa_cuadratica": 0.020474804939518254,
+    "MAE_clases": 1.0741319444444444
+  },
+  "MIXTA": {
+    "temperatura": 0.1,
+    "peso_grupos": 1.0,
+    "n": 11520,
+    "exactitud": 0.6661458333333333,
+    "F1_macro": 0.10754232882909266,
+    "F1_ponderado": 0.6226387538106478,
+    "log_loss": 0.9682588289371779,
+    "Brier_multiclase": 0.4057206834915562,
+    "kappa_cuadratica": 0.24055278517107515,
+    "MAE_clases": 0.81796875
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "arquitectura": "MIXTA",
+  "criterio": "Menor log-loss de validación entre cuatro arquitecturas; prueba no selecciona"
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "familia": "RF",
+    "vista": "topografia",
+    "indice": 0,
+    "log_loss_OOF": 1.143356372617572
+  },
+  {
+    "familia": "GP",
+    "vista": "topografia",
+    "indice": 0,
+    "log_loss_OOF": 1.2500387646827598
+  },
+  {
+    "familia": "LR",
+    "vista": "topografia",
+    "indice": 0,
+    "log_loss_OOF": 1.3126308733102021
+  }
+]

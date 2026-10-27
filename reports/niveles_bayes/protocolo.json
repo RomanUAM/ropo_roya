@@ -1,0 +1,59 @@
+{
+  "config": {
+    "seed": 42,
+    "bin_width": 3,
+    "trees": 180,
+    "gp_population": 200,
+    "gp_generations": 60,
+    "families": [
+      "RF",
+      "LR",
+      "GP",
+      "MIXTA"
+    ],
+    "split_sitios": [
+      0.5,
+      0.2,
+      0.3
+    ],
+    "bayes_smoothing": 20
+  },
+  "particion": [
+    {
+      "conjunto": "train",
+      "con_roya": 11900,
+      "sin_roya": 16828,
+      "sitios": 1100,
+      "sitios_siempre_negativos": 18,
+      "sitios_mixtos": 1082,
+      "fraccion_sitios": 0.5
+    },
+    {
+      "conjunto": "validacion",
+      "con_roya": 4642,
+      "sin_roya": 6878,
+      "sitios": 440,
+      "sitios_siempre_negativos": 7,
+      "sitios_mixtos": 433,
+      "fraccion_sitios": 0.2
+    },
+    {
+      "conjunto": "prueba",
+      "con_roya": 6947,
+      "sin_roya": 10405,
+      "sitios": 660,
+      "sitios_siempre_negativos": 12,
+      "sitios_mixtos": 648,
+      "fraccion_sitios": 0.3
+    }
+  ],
+  "etiquetas": "13 clases observadas 0..12 con anchos de tres puntos porcentuales; clase extrema sólo 3 train. Sin reinterpretar porcentajes como conteos.",
+  "vistas": "Topografía+coordenadas+altitud+urbanismo; simulación/antecedentes; Excel real+fenología+variedades. Calendario en las tres. ModalInputs train-only: normalización y ACP de continuas.",
+  "OOF": "5 folds por coordenadas compartidos; preprocesado y modelos nuevos en cada fold, sin reutilizar pesos binarios. Comunidades no supervisadas previas train de todo el año: limitación histórica.",
+  "GP": "Tres modelos GP ordinal de árboles <=3 niveles; fitness MSE ordinal balanceado+parsimonia, probabilidades por densidad gaussiana del score condicional a clase con suavizado20. No es el GP binario original sin cambios.",
+  "mezclador": "Bayes inverso aproximado: P(clase|3 vectores de probabilidad,3 grupos) proporcional a prior×densidades Dirichlet condicionales×verosimilitudes categóricas. Parámetros de clase ajustados en OOF train, suavizado y concentraciones acotadas.",
+  "contextos": "Grupo topográfico unido a comunidad urbanística; grupo climático simulado; grupo climático Excel. Sin incidencia de vecinos.",
+  "independencia": "Hipótesis aproximada entre expertos y grupos correlacionados; log-verosimilitudes promediadas y templadas. No se afirma calibración automática.",
+  "seleccion": "Temperatura y peso de grupos sólo por menor log-loss validación. MIXTA: mejor vista de cada familia por log-loss OOF train. Prueba no elige arquitectura.",
+  "evaluacion": "Matriz de confusión 13x13, F1 macro/por clase, log-loss, Brier y error ordinal; exactitud mayoritaria no basta. Test histórico reutilizado, exploratorio."
+}

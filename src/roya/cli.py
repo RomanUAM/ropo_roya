@@ -10,6 +10,8 @@ def main():
     report=sub.add_parser('informe');report.add_argument('--out',default='runs/calendario_r2')
     stack=sub.add_parser('entrenar-acp-probabilidades');stack.add_argument('--config');stack.add_argument('--out')
     neural=sub.add_parser('entrenar-tres-redes');neural.add_argument('--config');neural.add_argument('--out')
+    sub.add_parser('entrenar-niveles');sub.add_parser('analizar-niveles')
+    levels=sub.add_parser('predecir-niveles');levels.add_argument('input');levels.add_argument('output');levels.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF')
     sub.add_parser('entrenar-poisson');sub.add_parser('analizar-poisson')
     poisson=sub.add_parser('predecir-poisson');poisson.add_argument('input');poisson.add_argument('output');poisson.add_argument('--seed',type=int,default=42)
     sub.add_parser('entrenar-fusion-modal');sub.add_parser('analizar-fusion-modal')
@@ -18,7 +20,16 @@ def main():
     advanced=sub.add_parser('predecir-avanzado');advanced.add_argument('input');advanced.add_argument('output');advanced.add_argument('--ruta',choices=['tres_redes','acp_probabilidades'],default='tres_redes');advanced.add_argument('--fusion');advanced.add_argument('--arquitectura',default='LR');advanced.add_argument('--metodo')
     pred=sub.add_parser('predecir');pred.add_argument('input');pred.add_argument('output');pred.add_argument('--representacion',choices=['completas','ACP'],default='completas');pred.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF');pred.add_argument('--metodo');pred.add_argument('--estocastico',action='store_true');pred.add_argument('--seed',type=int,default=42);pred.add_argument('--out',default='runs/calendario_r2')
     args=parser.parse_args()
-    if args.action=='entrenar-poisson':
+    if args.action=='entrenar-niveles':
+        from roya.orquestador import run_niveles
+        run_niveles()
+    elif args.action=='analizar-niveles':
+        from roya.analisis_niveles import run
+        run()
+    elif args.action=='predecir-niveles':
+        from roya.niveles_bayes import predict
+        predict(pd.read_csv(args.input),family=args.arquitectura).to_csv(args.output,index=False)
+    elif args.action=='entrenar-poisson':
         from roya.orquestador import run_poisson
         run_poisson()
     elif args.action=='analizar-poisson':

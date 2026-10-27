@@ -9,7 +9,7 @@ st.title('Roya del café: presencia y cantidad')
 project=Path(__file__).resolve().parent
 advanced=project/'reports/avanzado'
 historical=project/'reports/calendario_r2'
-experiment=st.selectbox('Experimento',['Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
+experiment=st.selectbox('Experimento',['Clases de roya → cuatro arquitecturas y Bayes','Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
 if (advanced/'redes_resultados.json').exists():
     with st.expander('Comparaciones previas: ACP, GAM y PIG',expanded=False):
         st.write('Cantidad:11,900positivos+100negativos de entrenamiento. Validación/prueba completas. Unidad:porcentaje; rango operativo0–40.')
@@ -30,7 +30,17 @@ with_probs=True
 stochastic=False
 seed=42
 gate_modal=True
-if experiment.startswith('Media Poisson'):
+if experiment.startswith('Clases de roya'):
+    family=st.selectbox('Arquitectura multiclase',['RF','LR','GP','MIXTA'])
+    current=project/'reports/niveles_bayes'
+    st.write('Clase 0: sin roya; clase 1: 1–3%; clase 2: 4–6%; se continúa hasta clase 12: 34–36%. Tres expertos y mezclador bayesiano inverso con contexto de comunidades.')
+    st.warning('La clase extrema sólo tiene 3 registros de entrenamiento. Las probabilidades son estimaciones del modelo y requieren validación independiente.')
+    if (current/'conteo_clases.csv').exists():st.dataframe(pd.read_csv(current/'conteo_clases.csv'),hide_index=True)
+    if (current/'comparacion.csv').exists():st.dataframe(pd.read_csv(current/'comparacion.csv').query("conjunto=='prueba'"),hide_index=True)
+    if (current/'matrices_prueba.png').exists():st.image(str(current/'matrices_prueba.png'))
+    if (current/'INFORME.pdf').exists():st.download_button('Descargar informe de niveles',(current/'INFORME.pdf').read_bytes(),file_name='Roya_Niveles_Bayes.pdf')
+    ready=(project/'runs/niveles_bayes'/(family+'_mezclador.joblib')).exists()
+elif experiment.startswith('Media Poisson'):
     st.write('Toda la población, incluidos ceros; mes en las tres ramas y en la fusión 20–30–30–40. Media de incidencia porcentual con pérdida Poisson.')
     current=project/'reports/poisson_modal'
     if (current/'comparacion.csv').exists():st.dataframe(pd.read_csv(current/'comparacion.csv').query("conjunto=='prueba' and ambito=='todos'"),hide_index=True)
@@ -73,7 +83,10 @@ file=st.file_uploader('Registros existentesCSV',type=['csv'])
 if file is not None and st.button('Calcular'):
     try:
         data=pd.read_csv(file)
-        if experiment.startswith('Media Poisson'):
+        if experiment.startswith('Clases de roya'):
+            from roya.niveles_bayes import predict
+            result=predict(data,family=family)
+        elif experiment.startswith('Media Poisson'):
             from roya.poisson_modal import predict
             result=predict(data,seed=seed)
         elif experiment.startswith('Fusión'):
