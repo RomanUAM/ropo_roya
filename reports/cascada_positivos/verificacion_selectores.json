@@ -1,0 +1,26 @@
+[
+  {
+    "familia": "RF",
+    "filas": 120,
+    "probabilidades_y_umbral": "coinciden con evidencia guardada",
+    "salida_cero_en_negativos": true
+  },
+  {
+    "familia": "LR",
+    "filas": 120,
+    "probabilidades_y_umbral": "coinciden con evidencia guardada",
+    "salida_cero_en_negativos": true
+  },
+  {
+    "familia": "GP",
+    "filas": 120,
+    "probabilidades_y_umbral": "coinciden con evidencia guardada",
+    "salida_cero_en_negativos": true
+  },
+  {
+    "familia": "MIXTA",
+    "filas": 120,
+    "probabilidades_y_umbral": "coinciden con evidencia guardada",
+    "salida_cero_en_negativos": true
+  }
+]

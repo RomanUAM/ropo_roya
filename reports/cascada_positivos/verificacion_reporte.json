@@ -1,7 +1,8 @@
 {
   "paginas": 10,
-  "revision_visual": "10 páginas revisadas: sin recortes ni solapamientos",
+  "revision_visual": "Página 2 actualizada revisada sin recortes; 10 páginas conservadas",
   "pruebas": "36 passed",
-  "panel_streamlit": "AppTest OK, sin excepciones, descarga del reporte disponible",
-  "alcance_excel": "sitios y fechas catalogados; nuevos períodos requieren importación controlada e historial"
+  "panel_streamlit": "Cuatro alternativas de presencia seleccionables, AppTest sin excepciones",
+  "alcance_excel": "sitios y fechas catalogados; nuevos períodos requieren importación controlada e historial",
+  "verificacion_inferencia": "RF/LR/GP/MIXTA: 120 filas por alternativa; probabilidades y decisiones coinciden con caché de entrenamiento"
 }

@@ -29,7 +29,7 @@ def run():
         ax.annotate('',xy=(xx,yy),xytext=(x,y),arrowprops={'arrowstyle':'->','color':navy,'lw':1.5});
         if label:ax.text((x+xx)/2+.1,(y+yy)/2,label,fontsize=9,color=navy)
     box(1,8.5,8,1,'Historia del mismo sitio: roya t-1 y t-2\nTopografía/urbanismo; clima y fenología previos; calendario')
-    box(1,6.4,8,1.2,'ETAPA 1 · PRESENCIA\nTres Random Forest + calibrador bayesiano binario\nAprende con positivos y ceros; umbral temporal 0.45')
+    box(1,6.4,8,1.2,'ETAPA 1 · PRESENCIA\nCuatro opciones: RF / LR / GP / MIXTA + Bayes binario\nSeleccionada: RF (umbral 0.45); aprende con ambas clases')
     arrow(5,8.5,5,7.65);box(.4,4.5,2.5,1,'Ausencia\nCantidad = 0',orange);box(4,4.5,5.6,1,'Presencia\nActivar estimador de cantidad',green);arrow(3,6.4,1.7,5.6,'No');arrow(7,6.4,6.8,5.6,'Sí')
     box(4,2.55,5.6,1.2,'ETAPA 2 · CANTIDAD CONDICIONAL\nMixta: RF + GP + logística\nRed bayesiana: 5 capas ocultas de 13 neuronas',green);arrow(6.8,4.5,6.8,3.85)
     box(4,.6,5.6,1,'Media de incidencia entre positivos (%)\nCuantiles de lambda bajo posterior aproximado',green);arrow(6.8,2.55,6.8,1.7)
@@ -65,6 +65,7 @@ def run():
     para('Unidad: porcentaje de incidencia. La pérdida de Poisson es una cuasipérdida para estimar una media positiva; no convierte los porcentajes en conteos de hojas. Los cuantiles corresponden a lambda bajo un posterior variacional aproximado, no a intervalos predictivos calibrados de las observaciones.')
     img('cascada_validacion.png',465,139.5)
     page();para('Arquitectura y flujo de ejecución','Title');img('arquitectura.png',465,325.5)
+    para('<b>Cuatro alternativas en presencia:</b> RF usa tres bosques; LR, tres regresiones logísticas; GP, tres modelos de programación genética; MIXTA combina una vista de cada familia, elegida por log-loss OOF de entrenamiento. Cada opción tiene su propio mezclador bayesiano binario y umbral. El panel y la entrada Excel permiten elegirlas; Automático conserva RF. La elección del detector es independiente de la cantidad. Las matrices de las cuatro se presentan en las páginas 5 y 6.')
     para('Entrenar cantidad con Y>0 estima la media condicional E[Y | Y>0, historia]. El filtrado se hace con la presencia real observada, no con los positivos predichos por el detector. Así se conservan casos difíciles que el detector podría omitir.')
     para('Al predecir: detector negativo implica salida operativa cero y no se ejecutan expertos de cantidad ni red bayesiana. Detector positivo activa el segundo sistema. Los antecedentes t-1 y t-2 pueden ser cero; se conservan para representar aparición de enfermedad.')
     table(['Componente','Selección temporal'],[['Presencia','RF: tres vistas y calibrador bayesiano binario. Umbral 0.45 elegido por equilibrio de FPR y FNR en validación.'],['Cantidad','MIXTA + 5 capas ocultas de 13 neuronas. Una vista de cada familia RF/GP/LR, elegida por log-loss OOF; cantidad elegida por MAE de positivos de validación.']],[100,365])

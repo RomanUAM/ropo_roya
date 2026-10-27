@@ -84,11 +84,13 @@ def inference_frames(q,d,m,w):
         f=view.iloc[current if name=='topografia' else previd].reset_index(drop=True).copy();f['roya_t_1']=meta.lag1.to_numpy();f['roya_t_2']=meta.lag2.to_numpy();f['mes_objetivo_sen']=np.sin(2*np.pi*(meta.fecha.dt.month-1)/12);f['mes_objetivo_cos']=np.cos(2*np.pi*(meta.fecha.dt.month-1)/12);result[name]=f
     return meta,result
 
-def predict(request,detector='temporal',model_name=None,samples=100):
+def predict(request,detector='temporal',model_name=None,samples=100,presence_family=None):
+    if presence_family not in (None,'RF','LR','GP','MIXTA'):raise ValueError('presence_family debe ser RF, LR, GP o MIXTA')
+    if presence_family is not None and detector!='temporal':raise ValueError('La familia de presencia requiere detector temporal')
     q=load();registered,_=q.old.registered_data(request);d,m,w,_=q.data();meta,views=inference_frames(q,d,m,w);selection=json.loads((OUT/'seleccion_antes_prueba.json').read_text());tag=model_name or selection['modelo'];family=tag.split('_')[0];bundle=joblib.load(OUT/(tag+'.joblib'));ix=pd.Index(meta.fila_excel).get_indexer(registered.fila_excel)
     if np.any(ix<0):raise ValueError('Se requieren dos observaciones previas del mismo sitio')
     def probabilities(fam,indices,root=OUT):
-        entries=json.loads((OUT/'entradas_mixta.json').read_text()) if fam=='MIXTA' else [dict(familia=fam,vista=name) for name in BRANCHES];p=[]
+        entries=json.loads((root/'entradas_mixta.json').read_text()) if fam=='MIXTA' else [dict(familia=fam,vista=name) for name in BRANCHES];p=[]
         for e in entries:
             obj=joblib.load(root/e['familia']/(e['vista']+'.joblib'));p.append(pad_prob(obj['model'],obj['preprocess'].transform(views[e['vista']].iloc[indices]),13))
         return np.stack(p,axis=1)
@@ -98,7 +100,7 @@ def predict(request,detector='temporal',model_name=None,samples=100):
         from roya.acp_probabilidades import inference_inputs
         _,_,_,gate,details=inference_inputs(request,'LR');presence=details.probabilidad_roya.to_numpy();detector_name='LR/ACP historico, diagnostico'
     else:
-        fam=json.loads((PRESENCE_OUT/'seleccion_presencia_temporal.json').read_text())['familia'];obj=joblib.load(PRESENCE_OUT/(fam+'_presencia_temporal.joblib'));f=meta.iloc[ix];ctx=pd.DataFrame({'mes':f.fecha.dt.month.astype(str).to_numpy(),'lag1_clase':labels(f.lag1).astype(str),'lag2_clase':labels(f.lag2).astype(str)});p=probabilities(fam,ix,PRESENCE_OUT);p2=np.stack([p[:,:,0],1-p[:,:,0]],axis=-1);presence=obj['model'].predict_proba(p2,ctx,obj['temperature'],obj['context_weight'])[:,1];gate=presence>=obj['threshold'];detector_name=fam+' temporal OOF'
+        fam=presence_family or json.loads((PRESENCE_OUT/'seleccion_presencia_temporal.json').read_text())['familia'];obj=joblib.load(PRESENCE_OUT/(fam+'_presencia_temporal.joblib'));f=meta.iloc[ix];ctx=pd.DataFrame({'mes':f.fecha.dt.month.astype(str).to_numpy(),'lag1_clase':labels(f.lag1).astype(str),'lag2_clase':labels(f.lag2).astype(str)});p=probabilities(fam,ix,PRESENCE_OUT);p2=np.stack([p[:,:,0],1-p[:,:,0]],axis=-1);presence=obj['model'].predict_proba(p2,ctx,obj['temperature'],obj['context_weight'])[:,1];gate=presence>=obj['threshold'];detector_name=fam+' temporal OOF'
     result=pd.DataFrame({'fila_excel':registered.fila_excel.to_numpy(),'presencia_predicha':gate,'probabilidad_presencia':presence,'lambda_media':np.zeros(len(ix)),'lambda_p025':np.zeros(len(ix)),'lambda_p975':np.zeros(len(ix)),'modelo_cantidad':tag,'modelo_presencia':detector_name})
     if gate.any():
         indices=ix[gate];p=probabilities(family,indices);f=meta.iloc[indices];extra=np.column_stack([f.lag1,f.lag2,np.sin(2*np.pi*(f.fecha.dt.month-1)/12),np.cos(2*np.pi*(f.fecha.dt.month-1)/12)]);x=np.column_stack([p.reshape(len(indices),-1),extra]);posterior=bundle['model'].posterior(bundle['scaler'].transform(x),samples=samples)

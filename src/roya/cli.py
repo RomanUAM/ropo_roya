@@ -10,10 +10,10 @@ def main():
     report=sub.add_parser('informe');report.add_argument('--out',default='runs/calendario_r2')
     stack=sub.add_parser('entrenar-acp-probabilidades');stack.add_argument('--config');stack.add_argument('--out')
     neural=sub.add_parser('entrenar-tres-redes');neural.add_argument('--config');neural.add_argument('--out')
-    ex=sub.add_parser('predecir-excel');ex.add_argument('input');ex.add_argument('output')
+    ex=sub.add_parser('predecir-excel');ex.add_argument('input');ex.add_argument('output');ex.add_argument('--presencia',choices=['RF','LR','GP','MIXTA'])
     sub.add_parser('reporte-cascada')
     sub.add_parser('entrenar-temporal-bayes');sub.add_parser('auditar-temporal-bayes')
-    tb=sub.add_parser('predecir-temporal-bayes');tb.add_argument('input');tb.add_argument('output');tb.add_argument('--detector',choices=['temporal','historico'],default='temporal')
+    tb=sub.add_parser('predecir-temporal-bayes');tb.add_argument('input');tb.add_argument('output');tb.add_argument('--presencia',choices=['RF','LR','GP','MIXTA']);tb.add_argument('--detector',choices=['temporal','historico'],default='temporal')
     sub.add_parser('ensayo-temporal')
     sub.add_parser('entrenar-niveles');sub.add_parser('analizar-niveles')
     levels=sub.add_parser('predecir-niveles');levels.add_argument('input');levels.add_argument('output');levels.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF')
@@ -27,7 +27,7 @@ def main():
     args=parser.parse_args()
     if args.action=='predecir-excel':
         from roya.entrada_excel import predict_excel
-        predict_excel(args.input).to_csv(args.output,index=False)
+        predict_excel(args.input,presence_family=args.presencia).to_csv(args.output,index=False)
     elif args.action=='reporte-cascada':
         from roya.reporte_cascada import run
         run()
@@ -39,7 +39,7 @@ def main():
         run()
     elif args.action=='predecir-temporal-bayes':
         from roya.cascada_positivos import predict
-        predict(pd.read_csv(args.input),detector=args.detector).to_csv(args.output,index=False)
+        predict(pd.read_csv(args.input),detector=args.detector,presence_family=args.presencia).to_csv(args.output,index=False)
     elif args.action=='ensayo-temporal':
         from roya.temporal import run
         run()

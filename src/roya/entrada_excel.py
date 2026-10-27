@@ -57,12 +57,12 @@ def read_input(source):
     if name.endswith('.csv'):return pd.read_csv(source)
     raise ValueError('Formato admitido: .xlsx o .csv')
 
-def predict_excel(source):
+def predict_excel(source,presence_family=None):
     from roya.bridge import load
     from roya.cascada_positivos import predict
     q=load();reference=q.old.assemble();frame=source if isinstance(source,pd.DataFrame) else read_input(source);request=resolve(frame,reference,q.old.c.CLIMATE,q.g.STAGES,q.g.TARGET)
     history=reference.copy();history['_fecha']=q.h.reference_dates(history).to_numpy();history=history.sort_values(KEYS+['_fecha']);groups=history.groupby(KEYS,sort=False)[q.g.TARGET];eligible=groups.shift(1).notna()&groups.shift(2).notna();known=set(history.loc[eligible,'fila_excel']);valid=request.fila_excel.isin(known).to_numpy();result=pd.DataFrame({'_row':np.arange(len(request)),'fila_excel':request.fila_excel.to_numpy(),'prediccion_disponible':valid})
     if valid.any():
-        predicted=predict(request.loc[valid].reset_index(drop=True)).drop(columns='fila_excel');predicted['_row']=np.flatnonzero(valid);result=result.merge(predicted,on='_row',how='left',sort=False,validate='one_to_one')
+        predicted=predict(request.loc[valid].reset_index(drop=True),presence_family=presence_family).drop(columns='fila_excel');predicted['_row']=np.flatnonzero(valid);result=result.merge(predicted,on='_row',how='left',sort=False,validate='one_to_one')
     else:result['cantidad_estimada']=np.nan
     result['estado_entrada']=np.where(valid,'prediccion_generada','historia_insuficiente_t_1_t_2');result=result.sort_values('_row').drop(columns='_row');result.insert(0,'fila_archivo',np.arange(len(result))+2);return result

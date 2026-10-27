@@ -31,6 +31,9 @@ stochastic=False
 seed=42
 gate_modal=True
 if experiment.startswith('Cascada temporal'):
+    presence_choice=st.selectbox('Primera etapa: detector de presencia',['Automático (seleccionado en validación)','RF','LR','GP','MIXTA'])
+    presence_family=None if presence_choice.startswith('Automático') else presence_choice
+    st.caption('RF: tres bosques; LR: tres regresiones logísticas; GP: tres modelos de programación genética; MIXTA: una vista de cada familia. Cada alternativa fusiona sus probabilidades con un modelo bayesiano binario. Elegir aquí no reentrena ni cambia el estimador de cantidad.')
     current=project/'reports/cascada_positivos'
     st.caption('Excel con las mismas columnas: sitios y fechas catalogados. Fechas nuevas requieren actualizar historial y simulación. No se ignoran valores modificados.')
     st.warning('Ensayo en auditoría: prueba final sin positivos; no demuestra capacidad para estimar severidad futura.')
@@ -103,7 +106,7 @@ if file is not None and st.button('Calcular'):
         if experiment.startswith('Cascada temporal'):
             from roya.cascada_positivos import predict
             from roya.entrada_excel import predict_excel
-            result=predict(data) if list(data.columns)==['fila_excel'] else predict_excel(data)
+            result=predict(data,presence_family=presence_family) if list(data.columns)==['fila_excel'] else predict_excel(data,presence_family=presence_family)
         elif experiment.startswith('Clases de roya'):
             from roya.niveles_bayes import predict
             result=predict(data,family=family)
