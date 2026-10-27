@@ -130,3 +130,16 @@ La ruta anterior `temporal_bayes` con cantidad incondicional se conserva como re
 **Alcance de esta entrada:** sitios y fechas del catálogo histórico. Comprueba valores proporcionados y rechaza cambios o fechas inéditas; no ignora nuevas mediciones ni las incorpora automáticamente. Fechas nuevas requieren importar/versionar historial, extender la simulación y evaluar temporalmente. La ruta actual no implementa esa actualización de periodos. No basta con mantener encabezados iguales para garantizar un pronóstico nuevo. Los datos/modelos privados siguen fuera de Git.
 
 La primera etapa conserva cuatro detectores temporales seleccionables: RF (tres bosques), LR (tres logísticas), GP (tres modelos de programación genética) y MIXTA (una vista de cada familia). Todos fusionan probabilidades con su propio modelo bayesiano binario; Automático usa la selección de validación (RF). El selector no cambia el estimador de cantidad. Ejemplo: `roya predecir-excel entrada.xlsx salida.csv --presencia GP`. Comparar las matrices de presencia no equivale a haber validado las cuatro cascadas completas: los resultados completos publicados corresponden al detector automático.
+# Bases nuevas (0.10.0)
+
+La sección inicial **Bases nuevas** permite cargar Excel/CSV etiquetado, entrenar
+una versión propia y después aplicar una combinación de detector RF/LR/GP/MIXTA
+y estimador de nivel a archivos de una o varias zonas inéditas. No necesita los
+datos privados históricos. Incluye dos perfiles: diagnóstico contemporáneo y
+un paso adelante con t−1/t−2 medidos. Hay diez estimadores de nivel y se comparan
+las cuarenta cascadas con un protocolo temporal común 60/20/20.
+
+Las tres fuentes deben contener sus covariables; una tabla complementaria puede
+añadir topografía y simulación. Los modelos anteriores siguen en **Experimentos
+históricos**: sus pesos no se migran automáticamente. Ver [instrucciones, contrato
+y límites de evaluación](docs/BASES_NUEVAS.md).

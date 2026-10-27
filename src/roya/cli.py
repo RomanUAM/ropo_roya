@@ -5,6 +5,8 @@ import pandas as pd
 def main():
     parser=argparse.ArgumentParser(description='Roya: experimentos auditables y predicción congelada')
     sub=parser.add_subparsers(dest='action',required=True)
+    portable=sub.add_parser('entrenar-base');portable.add_argument('input');portable.add_argument('contrato');portable.add_argument('output');portable.add_argument('--config');portable.add_argument('--reglas');portable.add_argument('--simulacion')
+    apply=sub.add_parser('predecir-base');apply.add_argument('input');apply.add_argument('modelo');apply.add_argument('output');apply.add_argument('--detector',choices=['RF','LR','GP','MIXTA']);apply.add_argument('--nivel');apply.add_argument('--historial');apply.add_argument('--reglas');apply.add_argument('--simulacion');apply.add_argument('--reglas-historial')
     train=sub.add_parser('entrenar');train.add_argument('--config');train.add_argument('--out')
     verify=sub.add_parser('verificar');verify.add_argument('--out',default='runs/calendario_r2')
     report=sub.add_parser('informe');report.add_argument('--out',default='runs/calendario_r2')
@@ -25,7 +27,20 @@ def main():
     advanced=sub.add_parser('predecir-avanzado');advanced.add_argument('input');advanced.add_argument('output');advanced.add_argument('--ruta',choices=['tres_redes','acp_probabilidades'],default='tres_redes');advanced.add_argument('--fusion');advanced.add_argument('--arquitectura',default='LR');advanced.add_argument('--metodo')
     pred=sub.add_parser('predecir');pred.add_argument('input');pred.add_argument('output');pred.add_argument('--representacion',choices=['completas','ACP'],default='completas');pred.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF');pred.add_argument('--metodo');pred.add_argument('--estocastico',action='store_true');pred.add_argument('--seed',type=int,default=42);pred.add_argument('--out',default='runs/calendario_r2')
     args=parser.parse_args()
-    if args.action=='predecir-excel':
+    if args.action=='entrenar-base':
+        from roya.bases_nuevas import Contract,train,save
+        from roya.entrada_excel import read_input
+        contract=Contract(**json.loads(Path(args.contrato).read_text()))
+        config=json.loads(Path(args.config).read_text()) if args.config else None
+        rules=json.loads(Path(args.reglas).read_text()) if args.reglas else None
+        save(train(read_input(args.input),contract,config,policies=rules,simulation=read_input(args.simulacion) if args.simulacion else None),args.output)
+    elif args.action=='predecir-base':
+        from roya.bases_nuevas import load_model,predict
+        from roya.entrada_excel import read_input
+        rules=json.loads(Path(args.reglas).read_text()) if args.reglas else None
+        history_rules=json.loads(Path(args.reglas_historial).read_text()) if args.reglas_historial else None
+        predict(load_model(args.modelo),read_input(args.input),detector=args.detector,regressor=args.nivel,history=read_input(args.historial) if args.historial else None,policies=rules,simulation=read_input(args.simulacion) if args.simulacion else None,history_policies=history_rules).to_csv(args.output,index=False)
+    elif args.action=='predecir-excel':
         from roya.entrada_excel import predict_excel
         predict_excel(args.input,presence_family=args.presencia).to_csv(args.output,index=False)
     elif args.action=='reporte-cascada':

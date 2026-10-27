@@ -1,0 +1,18 @@
+{
+  "version": "0.10.0",
+  "datos_de_prueba": "Sintéticos; no son resultados del café",
+  "pruebas": "45 passed",
+  "panel": "Entrenar, guardar versión, estimar con cuatro detectores, completar faltantes con cero autorizado o simulación exacta: OK",
+  "contratos": [
+    "La incidencia actual no entra como predictor",
+    "La incidencia desconocida no se convierte en ausencia",
+    "No hay sustitución de identidad ni fecha con cero",
+    "La simulación exige sitio y fecha exactos",
+    "La historia sólo usa fechas anteriores del mismo sitio",
+    "Sin historia suficiente el resultado queda vacío",
+    "Un negativo no ejecuta el estimador de cantidad",
+    "Pesos históricos no se migran automáticamente"
+  ],
+  "calidad_real_nueva": "No evaluada en esta actualización",
+  "servidor_publicado": false
+}

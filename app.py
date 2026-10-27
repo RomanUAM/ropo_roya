@@ -7,6 +7,11 @@ import streamlit as st
 st.set_page_config(page_title='Roya: presencia y cantidad',layout='wide')
 st.title('Roya del café: presencia y cantidad')
 project=Path(__file__).resolve().parent
+workspace=st.sidebar.radio('Área de trabajo',['Bases nuevas','Experimentos históricos'])
+if workspace=='Bases nuevas':
+    from roya.panel_bases import page
+    page(project)
+    st.stop()
 advanced=project/'reports/avanzado'
 historical=project/'reports/calendario_r2'
 experiment=st.selectbox('Experimento',['Cascada temporal bayesiana (experimental)','Clases de roya → cuatro arquitecturas y Bayes','Media Poisson por sitio y momento','Fusión por fuentes → red 20–30–30–40','Tres redes → GAM, polinomios y PIG (0–40%)','ACP + probabilidades → regresores','Referencia anterior'])
