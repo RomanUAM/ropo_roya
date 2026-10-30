@@ -110,3 +110,30 @@ def test_empty_request_and_invalid_humidity_are_explicit(study):
     f=observations();f['Humedad_relativa']=101
     with pytest.raises(ValueError,match='entre 0 y 100'):
         inspect_data(f,schema())
+
+
+def test_vectorized_training_matches_history_queries_and_ignores_input_order():
+    f=observations().sample(frac=1,random_state=13).reset_index(drop=True)
+    prepared,x,_,ok=prepare(f,schema(),training=True)
+    request=f.loc[ok].sample(n=15,random_state=7).drop(columns=TARGET)
+    _,queried,_,available=prepare(request,schema(),history=f)
+    expected=x.loc[request.index].reset_index(drop=True)
+    pd.testing.assert_frame_equal(expected,queried,check_dtype=False)
+    assert available.all()
+
+
+def test_resume_uses_saved_models_and_rejects_changed_inputs(study,tmp_path,monkeypatch):
+    import shutil
+    import roya.estudio_municipal as controller
+    import roya.informe_base as report
+    dest=tmp_path/'recuperado';shutil.copytree(study,dest)
+    def no_training(*args,**kwargs):raise AssertionError('No debe reentrenar un modelo recuperado')
+    monkeypatch.setattr(controller,'train',no_training)
+    monkeypatch.setattr(report,'build',lambda *args:None)
+    config={'trees':4,'gp_population':12,'gp_generations':1,'neural_epochs':2}
+    fit_study(observations(),schema(),dest,scope='conjunto',config=config,resume=True)
+    events=[json.loads(line) for line in (dest/'mensajes.jsonl').read_text().splitlines()]
+    assert any(e['action']=='recuperar_modelos_verificados' for e in events)
+    changed=observations();changed.loc[0,'Temperatura']+=1
+    with pytest.raises(RuntimeError,match='cambió contrato'):
+        fit_study(changed,schema(),dest,scope='conjunto',config=config,resume=True)

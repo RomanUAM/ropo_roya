@@ -1,0 +1,186 @@
+{
+  "sistemas": [
+    {
+      "sistema": "Conjunto",
+      "detector": "RF",
+      "nivel": "log1p_lineal",
+      "MAE_validacion": 0.17277968487105722
+    },
+    {
+      "sistema": "Amatepec",
+      "detector": "LR",
+      "nivel": "bayes_3x13",
+      "MAE_validacion": 0.254229137872558
+    },
+    {
+      "sistema": "Sultepec",
+      "detector": null,
+      "nivel": null,
+      "MAE_validacion": null
+    }
+  ],
+  "particiones": [
+    {
+      "sistema": "Conjunto",
+      "conjunto": "train",
+      "filas": 31200,
+      "fechas": 13,
+      "positivos": 19824,
+      "desde": "2024-10-01 00:00:00",
+      "hasta": "2025-04-01 00:00:00"
+    },
+    {
+      "sistema": "Conjunto",
+      "conjunto": "validacion",
+      "filas": 9600,
+      "fechas": 4,
+      "positivos": 199,
+      "desde": "2025-04-16 00:00:00",
+      "hasta": "2025-06-01 00:00:00"
+    },
+    {
+      "sistema": "Conjunto",
+      "conjunto": "prueba",
+      "filas": 12000,
+      "fechas": 5,
+      "positivos": 0,
+      "desde": "2025-06-16 00:00:00",
+      "hasta": "2025-08-16 00:00:00"
+    },
+    {
+      "sistema": "Amatepec",
+      "conjunto": "train",
+      "filas": 15600,
+      "fechas": 13,
+      "positivos": 10114,
+      "desde": "2024-10-01 00:00:00",
+      "hasta": "2025-04-01 00:00:00"
+    },
+    {
+      "sistema": "Amatepec",
+      "conjunto": "validacion",
+      "filas": 4800,
+      "fechas": 4,
+      "positivos": 199,
+      "desde": "2025-04-16 00:00:00",
+      "hasta": "2025-06-01 00:00:00"
+    },
+    {
+      "sistema": "Amatepec",
+      "conjunto": "prueba",
+      "filas": 6000,
+      "fechas": 5,
+      "positivos": 0,
+      "desde": "2025-06-16 00:00:00",
+      "hasta": "2025-08-16 00:00:00"
+    },
+    {
+      "sistema": "Sultepec",
+      "conjunto": "train",
+      "filas": 15600,
+      "fechas": 13,
+      "positivos": 9710,
+      "desde": "2024-10-01 00:00:00",
+      "hasta": "2025-04-01 00:00:00"
+    },
+    {
+      "sistema": "Sultepec",
+      "conjunto": "validacion",
+      "filas": 4800,
+      "fechas": 4,
+      "positivos": 0,
+      "desde": "2025-04-16 00:00:00",
+      "hasta": "2025-06-01 00:00:00"
+    },
+    {
+      "sistema": "Sultepec",
+      "conjunto": "prueba",
+      "filas": 6000,
+      "fechas": 5,
+      "positivos": 0,
+      "desde": "2025-06-16 00:00:00",
+      "hasta": "2025-08-16 00:00:00"
+    }
+  ],
+  "comparacion": [
+    {
+      "Municipio": "Amatepec",
+      "conjunto": "validacion",
+      "sistema": "conjunto",
+      "n": 4800,
+      "MAE": 0.2761014159649529,
+      "RMSE": 1.581521809846647,
+      "R2": 0.3458008320985161,
+      "TN": 3475,
+      "FP": 1126,
+      "FN": 0,
+      "TP": 199,
+      "Brier": 0.0388417035133442,
+      "sensibilidad": 1.0,
+      "especificidad": 0.7552705933492719,
+      "precision_positiva": 0.150188679245283
+    },
+    {
+      "Municipio": "Amatepec",
+      "conjunto": "validacion",
+      "sistema": "municipal",
+      "n": 4800,
+      "MAE": 0.254229137872558,
+      "RMSE": 1.7941635963217144,
+      "R2": 0.1580550473499469,
+      "TN": 4461,
+      "FP": 140,
+      "FN": 9,
+      "TP": 190,
+      "Brier": 0.0423243607515179,
+      "sensibilidad": 0.9547738693467336,
+      "especificidad": 0.969571832210389,
+      "precision_positiva": 0.5757575757575758
+    },
+    {
+      "Municipio": "Amatepec",
+      "conjunto": "prueba",
+      "sistema": "conjunto",
+      "n": 6000,
+      "MAE": 0.0290567740796404,
+      "RMSE": 0.0991479282331036,
+      "R2": null,
+      "TN": 4042,
+      "FP": 1958,
+      "FN": 0,
+      "TP": 0,
+      "Brier": 0.0023921879667695,
+      "sensibilidad": null,
+      "especificidad": 0.6736666666666666,
+      "precision_positiva": 0.0
+    },
+    {
+      "Municipio": "Amatepec",
+      "conjunto": "prueba",
+      "sistema": "municipal",
+      "n": 6000,
+      "MAE": 0.6451538809386427,
+      "RMSE": 1.257396102650327,
+      "R2": null,
+      "TN": 4287,
+      "FP": 1713,
+      "FN": 0,
+      "TP": 0,
+      "Brier": 0.0145292244131321,
+      "sensibilidad": null,
+      "especificidad": 0.7145,
+      "precision_positiva": 0.0
+    }
+  ],
+  "paginas": 52,
+  "prueba_sin_positivos": true,
+  "datos_reales": true,
+  "unidad": "Incidencia porcentual",
+  "limites": [
+    "Una temporada",
+    "Prueba sin positivos",
+    "Fechas quincenales aproximadas",
+    "Simulación térmica sin humedad diaria completa",
+    "Sin reserva de sitios nuevos"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "0.11.1",
+  "datos_reales": true,
+  "registros_originales": 57600,
+  "sistemas": 3,
+  "pytest_pasaron": 54,
+  "matrices_por_sistema": 8,
+  "paneles_reales_estimados_por_sistema": 100,
+  "paginas_pdf": 52,
+  "matrices_reconstruidas_desde_probabilidades": true,
+  "revision_visual_paginas": 52,
+  "humedad_simulada_diaria_completa": false,
+  "prueba_con_positivos": false,
+  "despliegue_cloud_verificado": false
+}

@@ -16,7 +16,7 @@ fi
 if [ ! -f .venv/bin/python ]; then
   python3 -m venv .venv
 fi
-if ! .venv/bin/python -c 'import streamlit, roya; assert roya.__version__ == "0.11.0"' 2>/dev/null; then
+if ! .venv/bin/python -c 'import streamlit, roya; assert roya.__version__ == "0.11.1"' 2>/dev/null; then
   .venv/bin/python -m pip install -e .
 fi
 echo "La aplicación se abrirá en el navegador. Para cerrarla, pulse Control+C aquí."

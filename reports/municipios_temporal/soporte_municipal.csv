@@ -1,0 +1,3 @@
+Municipio,registros,sitios,fechas,positivos,ausencias,elegibles,sin_historia,train_positivos,train_ausencias,validacion_positivos,validacion_ausencias,prueba_positivos,prueba_ausencias
+Amatepec,28800,1200,24,11842,16958,26400,2400,10114,5486,199,4601,0,6000
+Sultepec,28800,1200,24,11647,17153,26400,2400,9710,5890,0,4800,0,6000

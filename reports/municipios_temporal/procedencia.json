@@ -1,0 +1,13 @@
+{
+  "fuentes": {
+    "Datos muestro Roya del cafe.xlsx": "e1dd00a8d294945807c9b85ea27303dbc7e532cacdac8d02adf567121065bd5e",
+    "restaurado/data/geografia_roya/base_geografica_exploratoria.csv": "ec2980e36ac739967de26ec33d6789b5d6b862ebfc9c3b54dde593b0fa7525b9",
+    "restaurado/data/barreras_naturales/analisis/relieve_y_estructuras_por_sitio.csv": "6666bc791cb16687e39a3db220d91a7c2e9e7bc0be6df4b117ac7592e6ec51b9",
+    "restaurado/data/evaluacion_humedad_bnn/modelo.joblib": "a2129081cdae95349ca74693d535beb6b4a4e27595a29c2efb7356d3ef11eb2c"
+  },
+  "igualdad_excel_comprobada": true,
+  "simulacion": "Aptitud térmica previa 24d de simulación original; no humedad simulada diaria",
+  "comunidades_historicas_usadas": false,
+  "protocolo": "Un paso con observaciones reales anteriores; fechas 1/16 aproximadas",
+  "segundos": 148.11812281608582
+}

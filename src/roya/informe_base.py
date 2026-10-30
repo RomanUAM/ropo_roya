@@ -28,7 +28,16 @@ def build(bundle, destination):
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
 
     def store(fig,name):
-        fig.tight_layout();fig.savefig(dest/name,dpi=160);plt.close(fig);images.append(name)
+        from io import BytesIO
+        from PIL import Image as PILImage
+        buffer=BytesIO()
+        try:
+            fig.tight_layout();fig.savefig(buffer,format='png',dpi=160)
+        finally:plt.close(fig)
+        payload=buffer.getvalue()
+        with PILImage.open(BytesIO(payload)) as check:check.load()
+        temporary=dest/(name+'.tmp');temporary.write_bytes(payload);temporary.replace(dest/name)
+        images.append(name)
 
     def scatter(ax,y,p,label):
         if not len(y):

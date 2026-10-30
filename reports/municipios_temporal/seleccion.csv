@@ -1,0 +1,4 @@
+sistema,detector,nivel,MAE_validacion
+Conjunto,RF,log1p_lineal,0.17277968487105722
+Amatepec,LR,bayes_3x13,0.254229137872558
+Sultepec,,,

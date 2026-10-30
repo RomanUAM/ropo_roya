@@ -16,6 +16,7 @@ LABELS={
     'temporal':'Diagnóstico de la serie temporal',
     'temporal_bayes':'Primer ensayo bayesiano temporal',
     'bases_nuevas':'Verificación del flujo para bases nuevas',
+    'municipios_temporal':'Datos reales: municipios y evaluación temporal',
 }
 ALLOWED={'.pdf','.png','.csv','.json','.md'}
 

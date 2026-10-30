@@ -6,7 +6,7 @@ import json
 import numpy as np
 import pandas as pd
 from roya.bases_nuevas import (canonical,complete_inputs,prepare,train,save,load_model,
-                               predict,scores,binary_scores)
+                               predict,scores,binary_scores,TRAIN_DEFAULTS)
 from roya.registro import Registry,write
 
 
@@ -49,11 +49,13 @@ def audit_model(bundle):
     return dict(orden_temporal=True,cantidad_solo_positivos=True,pares_guardados=True,promocion_operativa=False)
 
 
-def fit_study(frame,contract,destination,scope='municipios',config=None,policies=None,simulation=None,progress=None):
+def fit_study(frame,contract,destination,scope='municipios',config=None,policies=None,simulation=None,progress=None,resume=False):
     """Repite las cuatro arquitecturas y diez niveles en cada ámbito con registro real."""
     if scope not in ('conjunto','municipios','ambos'):raise ValueError('Ámbito no reconocido.')
     if 'Municipio' not in contract.keys:raise ValueError('La identidad temporal debe incluir Municipio.')
-    destination=Path(destination);destination.mkdir(parents=True,exist_ok=False)
+    destination=Path(destination)
+    if resume and not (destination/'registro.sqlite').is_file():raise ValueError('No existe un estudio previo para reanudar.')
+    destination.mkdir(parents=True,exist_ok=resume)
     registry=Registry(destination,'estudio_municipal_temporal_v1')
     cases={};status=[];events=[]
     def event(agent,action,evidence,state='ok'):
@@ -81,12 +83,26 @@ def fit_study(frame,contract,destination,scope='municipios',config=None,policies
             identifier='municipio_'+hashlib.sha256(label.encode()).hexdigest()[:16] if municipal else 'conjunto'
             try:
                 event('modelacion','entrenar_ambito',dict(ambito=label,filas=len(source)))
-                bundle=train(source,contract,config,policies,simulation,calendar=calendar)
+                folder=destination/identifier
+                if resume and (folder/'modelo.joblib').exists():
+                    bundle=load_model(folder)
+                    local=f if not municipal else f.loc[f.Municipio.eq(label)].reset_index(drop=True)
+                    signature=hashlib.sha256(pd.util.hash_pandas_object(local.astype(str),index=False).values.tobytes()).hexdigest()
+                    if bundle['contract']!=contract or bundle['audit']['config']!=dict(TRAIN_DEFAULTS,**(config or {})) or bundle['audit']['huella_datos']!=signature:
+                        raise RuntimeError('No se puede reanudar: cambió contrato, configuración o base de '+label)
+                    limits=bundle['audit']['limites_temporales']
+                    if any(limits[k]!=plan[k] for k in ('inicio_validacion','inicio_prueba')):
+                        raise RuntimeError('No se puede reanudar con un calendario diferente.')
+                    event('memoria','recuperar_modelos_verificados',dict(ambito=label,huella=signature))
+                else:bundle=train(source,contract,config,policies,simulation,calendar=calendar)
                 bundle['audit']['ambito']=label
                 bundle['audit']['sistema_municipal']=identifier.startswith('municipio_')
                 bundle['audit']['municipios_entrenados']=sorted(map(str,source.Municipio.astype(str).str.strip().unique()))
                 checked=audit_model(bundle);event('auditoria','verificar_ambito',dict(ambito=label,**checked))
-                folder=destination/identifier;save(bundle,folder)
+                if resume and (folder/'modelo.joblib').exists():
+                    from roya.informe_base import build
+                    build(bundle,folder)
+                else:save(bundle,folder)
                 cases[identifier]=dict(path=identifier,municipal=municipal,municipio=label if municipal else None,audit=bundle['audit'])
                 status.append(dict(ambito=label,estado='entrenado',motivo='',modelo_presencia=bundle['audit']['seleccion_detector'],modelo_nivel=bundle['audit']['seleccion_cantidad']))
                 event('comunicacion','guardar_informe_y_graficas',dict(ambito=label,carpeta=identifier))

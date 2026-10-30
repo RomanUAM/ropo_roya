@@ -6,6 +6,7 @@ def main():
     parser=argparse.ArgumentParser(description='Roya: experimentos auditables y predicción congelada')
     sub=parser.add_subparsers(dest='action',required=True)
     study=sub.add_parser('entrenar-estudio');study.add_argument('input');study.add_argument('contrato');study.add_argument('output');study.add_argument('--ambito',choices=['conjunto','municipios','ambos'],default='ambos');study.add_argument('--config');study.add_argument('--reglas');study.add_argument('--simulacion')
+    study.add_argument('--reanudar',action='store_true')
     study_apply=sub.add_parser('predecir-estudio');study_apply.add_argument('input');study_apply.add_argument('estudio');study_apply.add_argument('output');study_apply.add_argument('--modo',choices=['municipal','conjunto'],default='municipal');study_apply.add_argument('--historial');study_apply.add_argument('--detector',choices=['RF','LR','GP','MIXTA']);study_apply.add_argument('--nivel')
     study_apply.add_argument('--reglas');study_apply.add_argument('--reglas-historial');study_apply.add_argument('--simulacion')
     portable=sub.add_parser('entrenar-base');portable.add_argument('input');portable.add_argument('contrato');portable.add_argument('output');portable.add_argument('--config');portable.add_argument('--reglas');portable.add_argument('--simulacion')
@@ -34,7 +35,7 @@ def main():
         from roya.estudio_municipal import fit_study
         from roya.bases_nuevas import Contract
         from roya.entrada_excel import read_input
-        fit_study(read_input(args.input),Contract(**json.loads(Path(args.contrato).read_text())),args.output,args.ambito,json.loads(Path(args.config).read_text()) if args.config else None,json.loads(Path(args.reglas).read_text()) if args.reglas else None,read_input(args.simulacion) if args.simulacion else None)
+        fit_study(read_input(args.input),Contract(**json.loads(Path(args.contrato).read_text())),args.output,args.ambito,json.loads(Path(args.config).read_text()) if args.config else None,json.loads(Path(args.reglas).read_text()) if args.reglas else None,read_input(args.simulacion) if args.simulacion else None,resume=args.reanudar)
     elif args.action=='predecir-estudio':
         from roya.estudio_municipal import apply_study
         from roya.entrada_excel import read_input

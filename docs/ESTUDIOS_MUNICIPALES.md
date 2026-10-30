@@ -53,3 +53,25 @@ El panel separa proyectos por identidad autenticada OIDC y nombre. Sin autentica
 `ROYA_WORKSPACE_DIR` permite elegir un volumen persistente. Configurar la variable no instala almacenamiento durable: el administrador debe montar y respaldar el volumen del alojamiento. El respaldo ZIP contiene datos/modelos privados de ese proyecto; la aplicación no permite subir pesos arbitrarios ni restaura automáticamente respaldos. Versiones de la antigua carpeta compartida no se asignan a una cuenta automáticamente; su migración requiere identificar propietario y copiar la versión completa al proyecto correcto en el servidor.
 
 Esta actualización fue verificada con datos sintéticos, incluyendo sitios repetidos entre municipios, intervalos irregulares y un municipio sin positivos. No se reentrenó aquí la base privada real ni se comprobó una URL de Streamlit Cloud. Separar municipios puede reducir el tamaño de entrenamiento y empeorar resultados: la mejora predictiva debe comprobarse con datos reales y otra temporada. Una siguiente investigación útil es comparar modelos locales con modelos jerárquicos que compartan información sin ocultar diferencias municipales.
+
+## Ejecución real del 30 de octubre de 2026
+
+Los tres sistemas se ejecutaron sobre la base original, con 31,200 registros de
+entrenamiento, 9,600 de validación y 12,000 de prueba después de excluir las dos
+observaciones iniciales por sitio. Cortes: validación desde 2025-04-16; prueba
+desde 2025-06-16. Amatepec aporta los 199 positivos de validación; Sultepec no
+aporta positivos posteriores. La prueba completa está en cero.
+
+El [informe](../reports/municipios_temporal/Roya_Informe_Municipal_Temporal.pdf)
+expone también los resultados desfavorables. La función que equilibra tasas
+FN/FP no minimiza el número total de errores: dada la prevalencia de validación,
+un FN individual tiene aproximadamente 47 veces el peso de un FP individual.
+Una política distinta debe fijarse por costos agronómicos y comprobarse en otro
+experimento, sin seguir eligiendo con esta prueba histórica.
+
+La recuperación por CLI añade `--reanudar` al mismo comando y conserva ámbito,
+archivo, contrato y configuración. Sólo recupera modelos si coinciden huella de
+entrada, contrato, configuración y cortes. Recompone sus informes y continúa los
+ámbitos pendientes. Cambios incompatibles interrumpen la recuperación; no se
+publican como si pertenecieran al experimento original. Los respaldos privados
+no se publican en GitHub.

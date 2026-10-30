@@ -4,6 +4,32 @@ Sistema reproducible de clasificación de presencia y estimación de cantidad, c
 
 **Estado: experimental.** La unidad ya fue confirmada como porcentaje de incidencia. La prueba histórica se ha reutilizado; falta una temporada independiente, confirmar ceros y resolver200conflictos de geografía.
 
+## Ejecución real municipal 0.11.1
+
+Se reentrenaron el sistema conjunto, Amatepec y Sultepec con los 57,600 registros
+originales, rezagos t−1/t−2 y cortes comunes 60/20/20 por fechas. El
+[informe completo de 52 páginas](reports/municipios_temporal/Roya_Informe_Municipal_Temporal.pdf)
+incluye matrices y 300 paneles reales/estimados (100 por sistema).
+[Resumen de siete páginas](reports/municipios_temporal/RESUMEN.pdf) ·
+[Comparación emparejada](reports/municipios_temporal/comparacion_emparejada.csv).
+
+La separación mejoró algunos resultados de validación, pero no acreditó una mejora
+uniforme posterior. Amatepec municipal redujo FP de validación de 1,126 a 140,
+con nueve FN frente a cero. En prueba su MAE pasó de 0.0291 (conjunto) a 0.6452
+(municipal). El conjunto produjo 2,259 falsas alarmas en prueba. Sultepec carece
+de positivos en validación y prueba: no tiene pareja automática seleccionable.
+La prueba de ambos municipios contiene sólo ausencias y no valida sensibilidad
+ni severidad positiva. Se conservan persistencia/cero como referencias.
+
+La ejecución usa 17 variables topográficas/cartográficas, 14 de clima real/cultivo
+y cinco de cobertura/aptitud térmica simulada previa de 24 días. No inventa humedad
+simulada ni las dos columnas de distancias completamente vacías. Pesos y pares
+individuales permanecen privados. Los resultados agregados están en la galería.
+
+Se aceleró el cálculo causal de rezagos y se añadió `--reanudar`: comprueba huella,
+contrato, configuración y calendario antes de recuperar pesos. Los PNG se verifican
+y se publican mediante reemplazo atómico antes de componer el informe.
+
 ## Actualización 0.11: municipios y series temporales
 
 La entrada **Proyecto y municipios** permite entrenar un sistema conjunto, repetir

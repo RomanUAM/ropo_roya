@@ -28,6 +28,7 @@ from roya.niveles_bayes import InverseBayes
 
 FAMILIES = ('RF', 'LR', 'GP', 'MIXTA')
 VIEWS = ('topografia', 'excel', 'simulacion')
+TRAIN_DEFAULTS = {'trees':100,'gp_population':200,'gp_generations':30,'neural_epochs':100,'seed':42,'fp_weight':1.,'fn_weight':1.}
 REGRESSORS = ('lineal_multiple', 'log1p_lineal', 'polinomio_2', 'polinomio_3',
               'armonica', 'armonica_polinomio_2', 'red_neuronal',
               'bayes_3x13', 'bayes_4x13', 'bayes_5x13')
@@ -261,22 +262,37 @@ def prepare(frame, contract, training=False, history=None):
         if not training:
             hist, _, _, _ = prepare(hist, contract, training=True)
         hist = hist.sort_values([*contract.keys, '_fecha'])
-        histgroups = {key if isinstance(key, tuple) else (key,): g for key, g in hist.groupby(list(contract.keys), sort=False)}
-        for row in range(len(frame)):
-            key = tuple(frame.loc[row, list(contract.keys)])
-            g = histgroups.get(key)
-            prev = g[g._fecha.lt(frame.loc[row, '_fecha'])].tail(2) if g is not None else None
-            if prev is None or len(prev) < 2 or prev[contract.target].isna().any():
-                eligible[row] = False
-                x.loc[row, selected] = np.nan
-                continue
-            for col in selected:
-                if col not in contract.views['topografia']:
-                    x.loc[row, col] = prev.iloc[-1][col]
-            x.loc[row, 'roya_t_1'] = float(prev.iloc[-1][contract.target])
-            x.loc[row, 'roya_t_2'] = float(prev.iloc[-2][contract.target])
-            x.loc[row, 'dias_desde_t_1'] = (frame.loc[row,'_fecha']-prev.iloc[-1]['_fecha']).total_seconds()/86400
-            x.loc[row, 'dias_entre_t_1_t_2'] = (prev.iloc[-1]['_fecha']-prev.iloc[-2]['_fecha']).total_seconds()/86400
+        if training:
+            # Desplazamientos por serie ordenada: mismo cálculo causal sin un
+            # recorrido Python por cada fila de la base histórica completa.
+            dynamic=[col for col in selected if col not in contract.views['topografia']]
+            grouped=hist.groupby(list(contract.keys),sort=False)
+            previous=grouped[[*dynamic,contract.target,'_fecha']].shift(1)
+            previous2=grouped[[contract.target,'_fecha']].shift(2)
+            x[dynamic]=previous[dynamic].reindex(frame.index)
+            x['roya_t_1']=pd.to_numeric(previous[contract.target]).reindex(frame.index)
+            x['roya_t_2']=pd.to_numeric(previous2[contract.target]).reindex(frame.index)
+            x['dias_desde_t_1']=(hist._fecha-previous._fecha).dt.total_seconds().div(86400).reindex(frame.index)
+            x['dias_entre_t_1_t_2']=(previous._fecha-previous2._fecha).dt.total_seconds().div(86400).reindex(frame.index)
+            eligible=x[['roya_t_1','roya_t_2']].notna().all(axis=1).to_numpy()
+            x.loc[~eligible,selected+list(HISTORY)]=np.nan
+        else:
+            histgroups = {key if isinstance(key, tuple) else (key,): g for key, g in hist.groupby(list(contract.keys), sort=False)}
+            for row in range(len(frame)):
+                key = tuple(frame.loc[row, list(contract.keys)])
+                g = histgroups.get(key)
+                prev = g[g._fecha.lt(frame.loc[row, '_fecha'])].tail(2) if g is not None else None
+                if prev is None or len(prev) < 2 or prev[contract.target].isna().any():
+                    eligible[row] = False
+                    x.loc[row, selected] = np.nan
+                    continue
+                for col in selected:
+                    if col not in contract.views['topografia']:
+                        x.loc[row, col] = prev.iloc[-1][col]
+                x.loc[row, 'roya_t_1'] = float(prev.iloc[-1][contract.target])
+                x.loc[row, 'roya_t_2'] = float(prev.iloc[-2][contract.target])
+                x.loc[row, 'dias_desde_t_1'] = (frame.loc[row,'_fecha']-prev.iloc[-1]['_fecha']).total_seconds()/86400
+                x.loc[row, 'dias_entre_t_1_t_2'] = (prev.iloc[-1]['_fecha']-prev.iloc[-2]['_fecha']).total_seconds()/86400
     angle = 2 * np.pi * (frame._fecha.dt.month - 1) / 12
     day = 2 * np.pi * (frame._fecha.dt.day - 1) / frame._fecha.dt.days_in_month
     for c, values in [('mes_sen', np.sin(angle)), ('mes_cos', np.cos(angle)), ('dia_sen', np.sin(day)), ('dia_cos', np.cos(day))]:
@@ -409,7 +425,7 @@ class Quantity:
 
 def train(frame, contract, config=None, policies=None, simulation=None, calendar=None):
     """Devuelve un paquete candidato sin sustituir modelos históricos ni usar test para elegir."""
-    config = dict({'trees':100, 'gp_population':200, 'gp_generations':30, 'neural_epochs':100, 'seed':42,'fp_weight':1.,'fn_weight':1.}, **(config or {}))
+    config = dict(TRAIN_DEFAULTS, **(config or {}))
     if any(not np.isfinite(config[k]) or config[k]<=0 for k in ('fp_weight','fn_weight')):
         raise ValueError('Las prioridades de falsos positivos y negativos deben ser positivas y finitas.')
     contract.validate()
