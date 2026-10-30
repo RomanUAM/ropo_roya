@@ -5,6 +5,9 @@ import pandas as pd
 def main():
     parser=argparse.ArgumentParser(description='Roya: experimentos auditables y predicción congelada')
     sub=parser.add_subparsers(dest='action',required=True)
+    study=sub.add_parser('entrenar-estudio');study.add_argument('input');study.add_argument('contrato');study.add_argument('output');study.add_argument('--ambito',choices=['conjunto','municipios','ambos'],default='ambos');study.add_argument('--config');study.add_argument('--reglas');study.add_argument('--simulacion')
+    study_apply=sub.add_parser('predecir-estudio');study_apply.add_argument('input');study_apply.add_argument('estudio');study_apply.add_argument('output');study_apply.add_argument('--modo',choices=['municipal','conjunto'],default='municipal');study_apply.add_argument('--historial');study_apply.add_argument('--detector',choices=['RF','LR','GP','MIXTA']);study_apply.add_argument('--nivel')
+    study_apply.add_argument('--reglas');study_apply.add_argument('--reglas-historial');study_apply.add_argument('--simulacion')
     portable=sub.add_parser('entrenar-base');portable.add_argument('input');portable.add_argument('contrato');portable.add_argument('output');portable.add_argument('--config');portable.add_argument('--reglas');portable.add_argument('--simulacion')
     apply=sub.add_parser('predecir-base');apply.add_argument('input');apply.add_argument('modelo');apply.add_argument('output');apply.add_argument('--detector',choices=['RF','LR','GP','MIXTA']);apply.add_argument('--nivel');apply.add_argument('--historial');apply.add_argument('--reglas');apply.add_argument('--simulacion');apply.add_argument('--reglas-historial')
     train=sub.add_parser('entrenar');train.add_argument('--config');train.add_argument('--out')
@@ -27,7 +30,16 @@ def main():
     advanced=sub.add_parser('predecir-avanzado');advanced.add_argument('input');advanced.add_argument('output');advanced.add_argument('--ruta',choices=['tres_redes','acp_probabilidades'],default='tres_redes');advanced.add_argument('--fusion');advanced.add_argument('--arquitectura',default='LR');advanced.add_argument('--metodo')
     pred=sub.add_parser('predecir');pred.add_argument('input');pred.add_argument('output');pred.add_argument('--representacion',choices=['completas','ACP'],default='completas');pred.add_argument('--arquitectura',choices=['RF','LR','GP','MIXTA'],default='RF');pred.add_argument('--metodo');pred.add_argument('--estocastico',action='store_true');pred.add_argument('--seed',type=int,default=42);pred.add_argument('--out',default='runs/calendario_r2')
     args=parser.parse_args()
-    if args.action=='entrenar-base':
+    if args.action=='entrenar-estudio':
+        from roya.estudio_municipal import fit_study
+        from roya.bases_nuevas import Contract
+        from roya.entrada_excel import read_input
+        fit_study(read_input(args.input),Contract(**json.loads(Path(args.contrato).read_text())),args.output,args.ambito,json.loads(Path(args.config).read_text()) if args.config else None,json.loads(Path(args.reglas).read_text()) if args.reglas else None,read_input(args.simulacion) if args.simulacion else None)
+    elif args.action=='predecir-estudio':
+        from roya.estudio_municipal import apply_study
+        from roya.entrada_excel import read_input
+        apply_study(args.estudio,read_input(args.input),mode=args.modo,detector=args.detector,regressor=args.nivel,history=read_input(args.historial) if args.historial else None,policies=json.loads(Path(args.reglas).read_text()) if args.reglas else None,history_policies=json.loads(Path(args.reglas_historial).read_text()) if args.reglas_historial else None,simulation=read_input(args.simulacion) if args.simulacion else None).to_csv(args.output,index=False)
+    elif args.action=='entrenar-base':
         from roya.bases_nuevas import Contract,train,save
         from roya.entrada_excel import read_input
         contract=Contract(**json.loads(Path(args.contrato).read_text()))

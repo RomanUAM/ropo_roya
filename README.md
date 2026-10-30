@@ -4,7 +4,28 @@ Sistema reproducible de clasificación de presencia y estimación de cantidad, c
 
 **Estado: experimental.** La unidad ya fue confirmada como porcentaje de incidencia. La prueba histórica se ha reutilizado; falta una temporada independiente, confirmar ceros y resolver200conflictos de geografía.
 
-## Actualización0.5: tres redes, GAM y polinomios0–40
+## Actualización 0.11: municipios y series temporales
+
+La entrada **Proyecto y municipios** permite entrenar un sistema conjunto, repetir
+las cuatro arquitecturas y diez estimadores por municipio, o comparar ambas
+opciones. Conserva cortes cronológicos comunes 60/20/20, antecedentes reales
+t−1/t−2 del mismo sitio e intervalos entre observaciones. Cada municipio tiene
+sus propios normalizadores, modelos, calibración y selección. La comparación
+usa exactamente las mismas filas; los ámbitos sin soporte quedan identificados.
+
+El orquestador registra acciones, auditoría, informes y hallazgos calculados.
+La selección automática considera los errores de detección y el error total de
+cantidad; se incluyen persistencia, cero y media de entrenamiento como referencias.
+Los proyectos separan propietarios y permiten respaldos privados.
+
+[Guía municipal y temporal](docs/ESTUDIOS_MUNICIPALES.md) ·
+[Datos, arquitecturas y reglas de sustitución](docs/BASES_NUEVAS.md).
+La verificación del software utiliza datos sintéticos; esta actualización no
+aporta nuevas métricas científicas de la base real ni acredita su despliegue.
+
+## Historial de experimentos
+
+### Actualización0.5: tres redes, GAM y polinomios0–40
 
 Las tres redes reciben las mismas entradas normalizadas:ACP95% de continuas + tresprobabilidadesbaseOOF + indicadores/calendario. Cantidad se entrena con11,900positivos y100negativos de train. Sus salidasOOF alimentan GAM de splines, polinomios completos2/3con enlace logit y unaPoisson–inversa gaussiana truncada0..40. LaPIGsólo se ensaya porque los porcentajes observados son enteros; no se redondean ni se interpretan como conteos de hojas.
 
@@ -130,7 +151,7 @@ La ruta anterior `temporal_bayes` con cantidad incondicional se conserva como re
 **Alcance de esta entrada:** sitios y fechas del catálogo histórico. Comprueba valores proporcionados y rechaza cambios o fechas inéditas; no ignora nuevas mediciones ni las incorpora automáticamente. Fechas nuevas requieren importar/versionar historial, extender la simulación y evaluar temporalmente. La ruta actual no implementa esa actualización de periodos. No basta con mantener encabezados iguales para garantizar un pronóstico nuevo. Los datos/modelos privados siguen fuera de Git.
 
 La primera etapa conserva cuatro detectores temporales seleccionables: RF (tres bosques), LR (tres logísticas), GP (tres modelos de programación genética) y MIXTA (una vista de cada familia). Todos fusionan probabilidades con su propio modelo bayesiano binario; Automático usa la selección de validación (RF). El selector no cambia el estimador de cantidad. Ejemplo: `roya predecir-excel entrada.xlsx salida.csv --presencia GP`. Comparar las matrices de presencia no equivale a haber validado las cuatro cascadas completas: los resultados completos publicados corresponden al detector automático.
-# Bases nuevas (0.10.0)
+# Bases nuevas (0.11.0)
 
 **Informes y gráficas:** el menú lateral reúne todos los PDF, figuras,
 tablas y protocolos históricos, con descarga individual o completa. No requiere

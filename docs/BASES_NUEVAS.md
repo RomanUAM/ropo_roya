@@ -1,10 +1,11 @@
 # Bases nuevas: presencia y nivel de roya
 
-La sección **Bases nuevas** de `streamlit run app.py` admite registros ajenos al
+La sección **Proyecto y municipios** de `streamlit run app.py` admite registros ajenos al
 catálogo histórico. Permite entrenar versiones y aplicar una combinación a una
-o varias zonas. Las versiones se guardan en `runs/bases_nuevas/`; ese directorio
-privado no se publica en GitHub. Para otra máquina deben copiarse sus carpetas
-completas. No se sobreescribe una versión existente.
+o varias zonas. Los proyectos se separan por propietario y nombre bajo `ROYA_WORKSPACE_DIR`
+(o `runs/proyectos/` en local); no se publican en GitHub. Consulte la
+[guía municipal](ESTUDIOS_MUNICIPALES.md) para conservación, respaldo y ámbitos.
+No se sobreescribe un estudio existente.
 
 ## Dos tareas distintas
 
@@ -99,7 +100,7 @@ Entrenar toda una fuente con ceros asumidos no aporta información de esa fuente
 La selección manual debe conservar
 la definición científica de las variables y el origen causal de las comunidades.
 
-## Detector y estimador independientes
+## Detectores y estimadores combinables
 
 | Detector | Composición |
 |---|---|
@@ -109,9 +110,13 @@ la definición científica de las variables y el origen causal de las comunidade
 | MIXTA | La mejor fuente de cada familia según Brier OOF de entrenamiento |
 
 Cada alternativa fusiona tres probabilidades mediante Bayes inverso aproximado
-con contexto de mes. Su umbral se elige por equilibrio de tasas de falsos positivos
-y negativos en validación. Es una estimación probabilística: no se afirma que
-esté calibrada ni que tres expertos correlacionados sean independientes.
+con contexto de mes. Su umbral se elige por tasas ponderadas de falsos positivos y negativos en
+validación. Una reserva cronológica final de OOF de entrenamiento permite
+calibración logística si contiene ambas clases y al menos ocho filas, y el bloque
+anterior contiene ambas clases. En caso contrario se conserva la probabilidad
+aproximada y se registra el motivo. Se informa Brier antes/después en validación
+y prueba; ajustar calibración no garantiza mejorarla. No se supone independencia
+científica de expertos correlacionados.
 
 Los diez estimadores de nivel son lineal múltiple, lineal de `log(1+y)`, polinomios
 de grados 2/3, armónica, armónica polinómica de grado 2, red 20–30–30–40 y redes
@@ -138,7 +143,7 @@ declarado se aplica al resultado; por defecto es 40 puntos porcentuales.
   de observar esas covariables.
 - **Un paso adelante:** la topografía es del sitio; clima y fenología se toman de
   la observación real inmediatamente anterior del mismo sitio. Incorpora roya
-  medida en t−1 y t−2 y calendario de la fecha objetivo. La solicitud requiere una
+  medida en t−1 y t−2, días transcurridos entre observaciones y calendario de la fecha objetivo. La solicitud requiere una
   tabla de historial medido con las mismas variables. Sólo se consultan filas con
   fecha estrictamente menor a la objetivo. No se usan predicciones de otras filas
   como antecedentes ni mediciones de otros sitios. Una secuencia de solicitudes
@@ -155,7 +160,11 @@ Las fechas completas se ordenan y separan aproximadamente 60/20/20, sin mezclar
 la misma fecha entre bloques. Dentro de entrenamiento se generan probabilidades
 OOF con ventanas expansivas; cada fecha se predice con fechas anteriores. Cada
 ventana vuelve a ajustar su preprocesado. Se necesitan al menos diez positivos
-OOF para entrenar cantidad. La validación elige umbrales y opciones iniciales.
+OOF para entrenar cantidad. La validación elige umbrales y la pareja detector/estimador entre las cuarenta
+combinaciones mediante `peso_FN*FNR + peso_FP*FPR + MAE_cascada/maximo`.
+Los pesos son explícitos y positivos (por defecto uno). Se conservan métricas
+condicionales, pero la selección considera también los errores de la cascada.
+Sin soporte de ambas clases y positivos en validación no hay pareja automática.
 La prueba no participa en selección ni ajuste.
 
 Se guardan ocho matrices de presencia (cuatro alternativas × dos bloques), veinte

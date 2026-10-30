@@ -36,6 +36,7 @@ KEYS = ('Municipio', 'Parcela', 'Coordenada_X', 'Coordenada_Y')
 CLIMATE = ('Temperatura promedio', 'Punto_de_rocio', 'Temperatura',
            'Humedad_especifica', 'Humedad_relativa', 'Precipitacion')
 STAGES = ('Brotacion', 'Floracion', 'Amarre', 'Lechoso', 'Consistente', 'Maduro')
+HISTORY = ('roya_t_1','roya_t_2','dias_desde_t_1','dias_entre_t_1_t_2')
 
 
 def normalized(value):
@@ -178,7 +179,7 @@ class Contract:
             raise ValueError('Asigne cada variable a una sola vista; el calendario se incorpora automáticamente.')
         forbidden = {normalized(c) for c in [self.target, 'fila_excel', 'fila_archivo', 'Planta',
                                             '_fecha', 'Mes_registrado', 'Quincena', 'Fecha_muestreo_exacta',
-                                            'mes_sen','mes_cos','dia_sen','dia_cos','roya_t_1','roya_t_2',*self.keys[:2]]}
+                                            'mes_sen','mes_cos','dia_sen','dia_cos',*HISTORY,*self.keys[:2]]}
         forbidden.update(normalized(c) for c in self.keys if c not in ('Coordenada_X', 'Coordenada_Y'))
         if any(normalized(c) in forbidden for c in columns):
             raise ValueError('La incidencia actual y los identificadores no pueden ser predictores.')
@@ -251,6 +252,7 @@ def prepare(frame, contract, training=False, history=None):
     x = frame[selected].copy()
     eligible = np.ones(len(frame), bool)
     if contract.temporal:
+        for col in HISTORY:x[col]=np.nan
         # No se usa la etiqueta de la solicitud, ni la predicción de otra fila,
         # como antecedente. La historia externa contiene sólo mediciones reales.
         hist = frame if training else canonical(history) if history is not None else None
@@ -273,6 +275,8 @@ def prepare(frame, contract, training=False, history=None):
                     x.loc[row, col] = prev.iloc[-1][col]
             x.loc[row, 'roya_t_1'] = float(prev.iloc[-1][contract.target])
             x.loc[row, 'roya_t_2'] = float(prev.iloc[-2][contract.target])
+            x.loc[row, 'dias_desde_t_1'] = (frame.loc[row,'_fecha']-prev.iloc[-1]['_fecha']).total_seconds()/86400
+            x.loc[row, 'dias_entre_t_1_t_2'] = (prev.iloc[-1]['_fecha']-prev.iloc[-2]['_fecha']).total_seconds()/86400
     angle = 2 * np.pi * (frame._fecha.dt.month - 1) / 12
     day = 2 * np.pi * (frame._fecha.dt.day - 1) / frame._fecha.dt.days_in_month
     for c, values in [('mes_sen', np.sin(angle)), ('mes_cos', np.cos(angle)), ('dia_sen', np.sin(day)), ('dia_cos', np.cos(day))]:
@@ -319,7 +323,7 @@ def expert(family, config, seed):
 
 
 def view_input(x, contract, view):
-    cols = list(contract.views[view]) + [c for c in ('roya_t_1', 'roya_t_2', 'mes_sen', 'mes_cos', 'dia_sen', 'dia_cos') if c in x]
+    cols = list(contract.views[view]) + [c for c in (*HISTORY, 'mes_sen', 'mes_cos', 'dia_sen', 'dia_cos') if c in x]
     return cols, [c for c in cols if c not in contract.categorical], [c for c in cols if c in contract.categorical]
 
 
@@ -356,7 +360,19 @@ def binary_scores(y, p, threshold):
     tn, fp, fn, tp = confusion_matrix(y, p >= threshold, labels=[0, 1]).ravel()
     return dict(TN=int(tn), FP=int(fp), FN=int(fn), TP=int(tp), Brier=float(brier_score_loss(y, p)),
                 sensibilidad=float(tp/(tp+fn)) if tp+fn else None,
-                especificidad=float(tn/(tn+fp)) if tn+fp else None)
+                especificidad=float(tn/(tn+fp)) if tn+fp else None,
+                precision_positiva=float(tp/(tp+fp)) if tp+fp else None)
+
+
+def presence_probability(detector, probs, ctx):
+    raw=detector['model'].predict_proba(probability_tensor(probs),ctx)[:,1]
+    calibrator=detector.get('calibrator')
+    return calibrator.predict_proba(logit(raw))[:,1] if calibrator is not None else raw
+
+
+def logit(p):
+    p=np.clip(np.asarray(p,float),1e-6,1-1e-6)
+    return np.log(p/(1-p)).reshape(-1,1)
 
 
 def scores(y, p):
@@ -391,9 +407,11 @@ class Quantity:
         return np.expm1(np.clip(p, -20, 20)) if self.name in ('log1p_lineal', 'red_neuronal') else p
 
 
-def train(frame, contract, config=None, policies=None, simulation=None):
+def train(frame, contract, config=None, policies=None, simulation=None, calendar=None):
     """Devuelve un paquete candidato sin sustituir modelos históricos ni usar test para elegir."""
-    config = dict({'trees':100, 'gp_population':200, 'gp_generations':30, 'neural_epochs':100, 'seed':42}, **(config or {}))
+    config = dict({'trees':100, 'gp_population':200, 'gp_generations':30, 'neural_epochs':100, 'seed':42,'fp_weight':1.,'fn_weight':1.}, **(config or {}))
+    if any(not np.isfinite(config[k]) or config[k]<=0 for k in ('fp_weight','fn_weight')):
+        raise ValueError('Las prioridades de falsos positivos y negativos deben ser positivas y finitas.')
     contract.validate()
     frame, provenance = complete_inputs(frame, contract, policies, simulation)
     frame, x, y, eligible = prepare(frame, contract, training=True)
@@ -406,11 +424,14 @@ def train(frame, contract, config=None, policies=None, simulation=None):
         assumed=provenance[['cero','usuario']].apply(lambda r: col in r['cero'].split('; ') or col in r['usuario'].split('; '),axis=1)
         reference.loc[assumed,col]=np.nan
     frame, x, y = frame.loc[eligible].reset_index(drop=True), x.loc[eligible].reset_index(drop=True), y[eligible]
-    times = np.sort(frame._fecha.unique())
-    if len(times) < 10:
+    own_times=np.sort(frame._fecha.unique())
+    times=np.sort(pd.to_datetime(calendar).unique()) if calendar is not None else own_times
+    if len(own_times) < 10 or len(times)<10:
         raise ValueError('Se requieren al menos 10 fechas elegibles para separar 60/20/20 y producir probabilidades causales de entrenamiento.')
+    if not frame._fecha.isin(times).all():raise ValueError('El calendario de comparación no contiene todas las fechas elegibles.')
     a, b = int(.6*len(times)), int(.8*len(times))
     tr, va, te = frame._fecha.lt(times[a]).to_numpy(), frame._fecha.between(times[a], times[b], inclusive='left').to_numpy(), frame._fecha.ge(times[b]).to_numpy()
+    if not va.any() or not te.any():raise ValueError('No hay observaciones en validación o prueba para los cortes cronológicos establecidos.')
     binary = (y > 0).astype(int)
     if (y[tr] > 0).sum() < 10 or len(np.unique(binary[tr])) < 2:
         raise ValueError('Entrenamiento requiere ambas clases y al menos 10 observaciones positivas.')
@@ -419,7 +440,7 @@ def train(frame, contract, config=None, policies=None, simulation=None):
     for start in range(2, a, 2):
         fit = frame._fecha.lt(times[start]).to_numpy()
         hold = frame._fecha.isin(times[start:min(start+2, a)]).to_numpy()
-        if len(np.unique(binary[fit])) < 2:
+        if not hold.any() or len(np.unique(binary[fit])) < 2:
             continue
         models = fit_experts(x.loc[fit], binary[fit], contract, config, config['seed']+start)
         pred = probabilities(models, x.loc[hold])
@@ -428,28 +449,44 @@ def train(frame, contract, config=None, policies=None, simulation=None):
     mask = tr & np.isfinite(oof['RF']).all(axis=1)
     if len(np.unique(binary[mask])) < 2 or (y[mask] > 0).sum() < 10:
         raise ValueError('La parte OOF causal requiere ambas clases y al menos 10 positivos. Amplíe el historial inicial.')
-    entries = []
+    entries,source_scores = [],[]
     for fam in FAMILIES[:3]:
         loss = [np.mean((oof[fam][mask, j]-binary[mask])**2) for j in range(3)]
+        source_scores.extend(dict(familia=fam,fuente=view,Brier_OOF=float(loss[j]),filas=int(mask.sum())) for j,view in enumerate(VIEWS))
         entries.append((fam, int(np.argmin(loss))))
     oof['MIXTA'] = mixture(oof, entries)
     models = fit_experts(x.loc[tr], binary[tr], contract, config, config['seed'])
     prob = probabilities(models, x)
     prob['MIXTA'] = mixture(prob, entries)
     detectors, binary_rows = {}, []
+    # Reserva final dentro de OOF train para calibrar sin ajustar el mezclador
+    # sobre sus propias etiquetas de calibración. Nunca se calibra con prueba.
+    oof_dates=np.sort(frame.loc[mask,'_fecha'].unique());cal_dates=oof_dates[-max(1,len(oof_dates)//3):]
+    cal=mask&frame._fecha.isin(cal_dates).to_numpy();meta_fit=mask&~cal
+    can_calibrate=bool(len(np.unique(binary[meta_fit]))==2 and len(np.unique(binary[cal]))==2 and cal.sum()>=8)
+    calibration_info={}
     for fam in FAMILIES:
-        det = InverseBayes().fit(probability_tensor(oof[fam][mask]), binary[mask], context(frame.loc[mask]))
-        p = det.predict_proba(probability_tensor(prob[fam]), context(frame))[:, 1]
+        fit_mask=meta_fit if can_calibrate else mask
+        det = InverseBayes().fit(probability_tensor(oof[fam][fit_mask]), binary[fit_mask], context(frame.loc[fit_mask]))
+        calibrator=None
+        if can_calibrate:
+            raw=det.predict_proba(probability_tensor(oof[fam][cal]),context(frame.loc[cal]))[:,1]
+            calibrator=LogisticRegression(C=1.,max_iter=1000).fit(logit(raw),binary[cal])
+        detectors[fam]=dict(model=det,calibrator=calibrator)
+        p=presence_probability(detectors[fam],prob[fam],context(frame))
         threshold = .5
         if len(np.unique(binary[va])) == 2:
             candidates = np.linspace(.025, .975, 39)
-            threshold = float(min(candidates, key=lambda t: np.mean(p[va & (binary==0)] >= t)+np.mean(p[va & (binary==1)] < t)))
-        detectors[fam] = dict(model=det, threshold=threshold)
+            threshold = float(min(candidates, key=lambda t: config['fp_weight']*np.mean(p[va & (binary==0)] >= t)+config['fn_weight']*np.mean(p[va & (binary==1)] < t)))
+        detectors[fam]['threshold']=threshold
+        calibration_info[fam]=dict(ajustada=can_calibrate,filas=int(cal.sum()) if can_calibrate else 0,desde=str(frame.loc[cal,'_fecha'].min()) if can_calibrate else None,hasta=str(frame.loc[cal,'_fecha'].max()) if can_calibrate else None,fin_ajuste_mezclador=str(frame.loc[fit_mask,'_fecha'].max()),motivo=None if can_calibrate else 'Sin soporte de ambas clases en reserva temporal train; probabilidades aproximadas sin calibración ajustada.')
+        raw=det.predict_proba(probability_tensor(prob[fam]),context(frame))[:,1]
+        calibration_info[fam]['evaluacion']={part:dict(n=int(ix.sum()),Brier_antes=float(brier_score_loss(binary[ix],raw[ix])),Brier_despues=float(brier_score_loss(binary[ix],p[ix]))) for part,ix in [('validacion',va),('prueba',te)]}
         for part, ix in [('validacion', va), ('prueba', te)]:
             binary_rows.append(dict(familia=fam, conjunto=part, umbral=threshold, **binary_scores(binary[ix], p[ix], threshold)))
     # Estimador de cantidad común e independiente del detector elegido.
     # Usa covariables y nueve probabilidades expertas OOF; nunca la incidencia actual.
-    extras = ['roya_t_1','roya_t_2'] if contract.temporal else []
+    extras = list(HISTORY) if contract.temporal else []
     nums = contract.numeric + extras + ['mes_sen','mes_cos','dia_sen','dia_cos']
     positive = mask & (y > 0)
     quantity_input = Inputs().fit(x.loc[positive], nums, contract.categorical, contract.representation)
@@ -461,8 +498,11 @@ def train(frame, contract, config=None, policies=None, simulation=None):
     evaluation=frame.loc[va|te,['_fecha']].reset_index(drop=True).rename(columns={'_fecha':'fecha'})
     evaluation['conjunto']=np.where(va[va|te],'validacion','prueba')
     evaluation['real']=y[va|te]
+    evaluation['Municipio']=frame.loc[va|te,'Municipio'].to_numpy()
+    row_keys=frame[list(contract.keys)+['_fecha']].astype(str)
+    evaluation['id_evaluacion']=pd.util.hash_pandas_object(row_keys,index=False).astype(str).to_numpy()[va|te]
     for fam in FAMILIES:
-        evaluation['probabilidad_'+fam]=detectors[fam]['model'].predict_proba(probability_tensor(prob[fam][va|te]),context(frame.loc[va|te]))[:,1]
+        evaluation['probabilidad_'+fam]=presence_probability(detectors[fam],prob[fam][va|te],context(frame.loc[va|te]))
     notices = []
     for name in REGRESSORS:
         # Armónicas incluyen dos órdenes de Fourier de mes y día explícitos.
@@ -480,29 +520,47 @@ def train(frame, contract, config=None, policies=None, simulation=None):
             quantity_rows.append(dict(modelo=name, conjunto=part, **scores(y[ix & (y>0)], estimate[ix & (y>0)])))
             for fam in FAMILIES:
                 det = detectors[fam]
-                p = det['model'].predict_proba(probability_tensor(prob[fam][ix]), context(frame.loc[ix]))[:, 1]
+                p = presence_probability(det,prob[fam][ix],context(frame.loc[ix]))
                 cascade_rows.append(dict(detector=fam, modelo=name, conjunto=part, **scores(y[ix], np.where(p>=det['threshold'], estimate[ix], 0))))
     val = [r for r in binary_rows if r['conjunto']=='validacion' and r['sensibilidad'] is not None and r['especificidad'] is not None]
-    selected_detector = min(val, key=lambda r: 2-r['sensibilidad']-r['especificidad'])['familia'] if val else None
+    selected_detector = min(val, key=lambda r: config['fn_weight']*(1-r['sensibilidad'])+config['fp_weight']*(1-r['especificidad']))['familia'] if val else None
     valq = [r for r in quantity_rows if r['conjunto']=='validacion' and r['MAE'] is not None]
     selected_quantity = min(valq, key=lambda r: r['MAE'])['modelo'] if valq else None
-    ranges = {c: [float(x.loc[tr,c].min()), float(x.loc[tr,c].max())] for c in contract.numeric if x.loc[tr,c].notna().any()}
+    selection_rows=[]
+    for row in cascade_rows:
+        if row['conjunto']!='validacion':continue
+        presence=next(r for r in val if r['familia']==row['detector']) if val else None
+        loss=(config['fn_weight']*(1-presence['sensibilidad'])+config['fp_weight']*(1-presence['especificidad'])+row['MAE']/contract.max_level) if presence and valq else None
+        selection_rows.append(dict(detector=row['detector'],modelo=row['modelo'],perdida=loss))
+    usable=[r for r in selection_rows if r['perdida'] is not None]
+    if usable:
+        best=min(usable,key=lambda r:r['perdida']);selected_detector,selected_quantity=best['detector'],best['modelo']
+    ranges = {c: [float(x.loc[tr,c].min()), float(x.loc[tr,c].max())] for c in contract.numeric+(list(HISTORY) if contract.temporal else []) if x.loc[tr,c].notna().any()}
     audit = dict(formato=1, contrato=asdict(contract), config=config, filas=len(frame), positivos_cantidad=int(positive.sum()),
                  negativos_cantidad=0, particion=[dict(conjunto=n, filas=int(ix.sum()), fechas=int(frame.loc[ix,'_fecha'].nunique()), positivos=int(binary[ix].sum()), desde=str(frame.loc[ix,'_fecha'].min()), hasta=str(frame.loc[ix,'_fecha'].max())) for n, ix in [('train',tr),('validacion',va),('prueba',te)]],
                  protocolo='60/20/20 por fechas completas. OOF expansivo en train. Preprocesado sólo train. Cantidad sólo positivos OOF. Umbrales y selección sólo validación; test no elige. Sin aumento automático.',
                  horizonte='Un paso con antecedentes reales' if contract.temporal else 'Diagnóstico en fecha con covariables contemporáneas; no acredita pronóstico anticipado',
-                 probabilidades='Posteriores aproximados; no se afirma calibración. Mezcla por menor Brier OOF train.',
+                 probabilidades='Mezcla por menor Brier OOF train. Calibración logística en reserva final de OOF train cuando ambas clases tienen soporte; su calidad se evalúa con Brier en bloques posteriores.',
                  seleccion_detector=selected_detector, seleccion_cantidad=selected_quantity, advertencias=notices,
                  promocion_operativa=False, version_sklearn=__import__('sklearn').__version__,
                  huella_datos=input_hash, filas_entrada=input_count)
     audit['sustituciones']={c:dict(filas=int(provenance[c].ne('').sum()),variables=sorted(set('; '.join(provenance[c]).split('; '))-{''})) for c in provenance}
     audit['reglas_entrenamiento']=policies or {}
     audit['predictores_constantes']=[c for c in x if x.loc[tr,c].nunique(dropna=True)<=1]
+    audit['calibracion']=calibration_info
+    audit['seleccion_conjunta']=dict(criterio='peso_FN*FNR + peso_FP*FPR + MAE_cascada/maximo; exclusivamente validación',candidatos=selection_rows)
+    audit['limites_temporales']=dict(inicio_validacion=str(pd.Timestamp(times[a])),inicio_prueba=str(pd.Timestamp(times[b])),calendario_comun=calendar is not None)
+    if contract.temporal:
+        audit['intervalos_observados_dias']={c:dict(minimo=float(x.loc[tr,c].min()),mediana=float(x.loc[tr,c].median()),maximo=float(x.loc[tr,c].max())) for c in HISTORY[2:]}
+    baselines=[]
+    for label,ix in [('validacion',va),('prueba',te)]:
+        for name,p in [('cero',np.zeros(ix.sum())),('media_train',np.full(ix.sum(),float(y[tr].mean())))]+([('persistencia',x.loc[ix,'roya_t_1'].to_numpy())] if contract.temporal else []):
+            baselines.append(dict(modelo=name,conjunto=label,**scores(y[ix],p)))
     return dict(kind='roya_portable_v1', contract=contract, models=models, mixture=entries, detectors=detectors,
                 quantity_input=quantity_input, regressors=regressors, audit=audit, ranges=ranges,
                 sites=set(map(tuple, frame.loc[tr,list(contract.keys)].to_numpy())),
                 matrices=binary_rows, quantity_metrics=quantity_rows, cascade_metrics=cascade_rows, simulation_reference=reference,
-                evaluation=evaluation)
+                evaluation=evaluation,baselines=baselines,source_scores=source_scores)
 
 
 def predict(bundle, frame, detector=None, regressor=None, history=None, policies=None, simulation=None, history_policies=None):
@@ -530,6 +588,7 @@ def predict(bundle, frame, detector=None, regressor=None, history=None, policies
     out['fecha'] = frame._fecha
     out['modelo_presencia'] = detector
     out['modelo_nivel'] = regressor
+    out['probabilidad_con_calibracion_ajustada']=bundle['detectors'][detector].get('calibrator') is not None
     out['probabilidad_roya'] = np.nan
     out['presencia_roya'] = pd.array([pd.NA]*len(frame), dtype='boolean')
     out['nivel_roya'] = np.nan
@@ -537,6 +596,8 @@ def predict(bundle, frame, detector=None, regressor=None, history=None, policies
     out['sitio_nuevo'] = [tuple(row) not in bundle['sites'] for row in frame[list(contract.keys)].to_numpy()]
     out['fuera_rango_entrenamiento'] = False
     out['datos_imputados'] = x[contract.numeric].isna().any(axis=1)
+    if contract.temporal:
+        for col in HISTORY[2:]:out[col]=x[col].to_numpy()
     out['historial_con_sustituciones'] = history_assumed
     for name in provenance:
         out['variables_'+name]=provenance[name].to_numpy()
@@ -550,7 +611,7 @@ def predict(bundle, frame, detector=None, regressor=None, history=None, policies
         probs = probabilities(bundle['models'], x.loc[eligible])
         probs['MIXTA'] = mixture(probs, bundle['mixture'])
         det = bundle['detectors'][detector]
-        p = det['model'].predict_proba(probability_tensor(probs[detector]), context(frame.loc[eligible]))[:,1]
+        p = presence_probability(det,probs[detector],context(frame.loc[eligible]))
         decision = p >= det['threshold']
         out.loc[eligible,'probabilidad_roya'] = p
         out.loc[eligible,'presencia_roya'] = decision
@@ -569,6 +630,10 @@ def predict(bundle, frame, detector=None, regressor=None, history=None, policies
     inconsistent = out.presencia_roya.fillna(False) & out.nivel_roya.le(0)
     out.loc[inconsistent, 'clase_roya'] = pd.NA
     out.loc[inconsistent, 'estado'] = 'revisar_presencia_positiva_con_nivel_cero'
+    out['nivel_condicional']=out.nivel_roya.where(out.presencia_roya.fillna(False))
+    out['requiere_revision']=out.sitio_nuevo|out.fuera_rango_entrenamiento|out.categoria_nueva|out.variables_cero.ne('')|out.historial_con_sustituciones|~eligible|inconsistent
+    out['interpretacion']=np.where(out.presencia_roya.fillna(False),'El modelo detecta presencia','El modelo no detecta presencia; no confirma ausencia')
+    out.loc[out.requiere_revision,'interpretacion']='Requiere revisión: consulte procedencia, dominio e historial'
     return out
 
 
@@ -588,6 +653,8 @@ def save(bundle, destination):
     (destination/'protocolo.json').write_text(json.dumps(bundle['audit'], ensure_ascii=False, indent=2, allow_nan=False)+'\n')
     for name, key in [('matrices','matrices'),('cantidad','quantity_metrics'),('cascadas','cascade_metrics')]:
         pd.DataFrame(bundle[key]).to_csv(destination/(name+'.csv'), index=False)
+    if 'baselines' in bundle:pd.DataFrame(bundle['baselines']).to_csv(destination/'referencias.csv',index=False)
+    if 'source_scores' in bundle:pd.DataFrame(bundle['source_scores']).to_csv(destination/'fuentes_OOF.csv',index=False)
     if 'evaluation' in bundle:
         bundle['evaluation'].to_csv(destination/'evaluacion_real_predicha.csv',index=False)
         from roya.informe_base import build

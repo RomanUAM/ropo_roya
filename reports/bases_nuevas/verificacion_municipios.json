@@ -1,0 +1,26 @@
+{
+  "version": "0.11.0",
+  "fecha": "2026-10-30",
+  "naturaleza": "Verificación de software con datos sintéticos; no resultados científicos nuevos de café",
+  "pytest": {
+    "pasaron": 52,
+    "fallaron": 0
+  },
+  "comprobaciones": [
+    "Calendario común 60/20/20 por fechas completas",
+    "Normalizadores y modelos propios por municipio",
+    "Identidades y fechas iguales en comparación global/local",
+    "Rezagos reales t-1/t-2 sin cruce entre municipios ni acceso a respuesta actual/futura",
+    "Intervalos irregulares entre muestreos",
+    "Municipio sin soporte: abstención y motivo, sin sustitución global",
+    "Calibración sólo OOF train y selección conjunta sólo validación",
+    "Referencias cero, media y persistencia",
+    "Proyectos y respaldos separados por propietario",
+    "Streamlit: carga, diagnóstico e inferencia con historial y tres municipios",
+    "Streamlit: cambio entre informes, bloques y gráficas; galería histórica",
+    "PDF conjunto: revisión visual de quince páginas; portada municipal revisada",
+    "Compilación y git diff --check"
+  ],
+  "base_real_reentrenada": false,
+  "despliegue_streamlit_cloud_verificado": false
+}

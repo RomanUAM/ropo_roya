@@ -101,6 +101,7 @@ def build(bundle, destination):
     audit=bundle['audit']
     text('Roya del café: informe de la versión','Title')
     text('Matrices, protocolo y real frente a predicho','Heading2')
+    if audit.get('ambito'):text('Sistema: '+escape(audit['ambito'])+' - '+('municipal independiente' if audit.get('sistema_municipal') else 'conjunto'),'Heading2')
     text('Huella de entrada: '+audit['huella_datos'][:16]+'. Unidad: la declarada en la base; máximo '+str(maximum)+'.')
     text('<b>Resultados exploratorios.</b> El informe usa evaluaciones de esta versión, no reutiliza métricas históricas. La prueba se conserva para evaluar; no elige umbrales ni modelos. No se acredita transferencia a otra zona con este corte temporal.')
     table(['Bloque','Filas','Fechas','Positivos'],[[p['conjunto'],p['filas'],p['fechas'],p['positivos']] for p in audit['particion']],[160,110,110,110])
@@ -110,6 +111,8 @@ def build(bundle, destination):
     text('Sustituciones en las entradas: '+escape(json.dumps(audit.get('sustituciones',{}),ensure_ascii=False))+'. Los ceros asumidos no equivalen a ausencias observadas de roya.')
     page();text('Arquitectura y protocolo','Title');picture('arquitectura.png')
     text(escape(audit['protocolo']));text(escape(audit['horizonte']));text(escape(audit['probabilidades']))
+    if audit.get('seleccion_conjunta'):text('Selección de la pareja completa: '+escape(audit['seleccion_conjunta']['criterio']))
+    if audit.get('intervalos_observados_dias'):text('Separación entre observaciones en entrenamiento (días): '+escape(json.dumps(audit['intervalos_observados_dias'],ensure_ascii=False)))
     text('Estimadores de nivel: '+', '.join(NAMES.get(n,n) for n in names)+'.')
     text('Las columnas, tipos, normalizadores y ACP están guardados en la versión. Los valores simulados y asumidos se distinguen de los observados. Los intervalos entre t-1 y t-2 son observaciones anteriores, no días fijos.')
     for split in ['validacion','prueba']:
@@ -123,6 +126,9 @@ def build(bundle, destination):
     page();text('Errores y evolución de la combinación inicial','Title');picture('errores_y_evolucion.png')
     text('Los CSV adjuntos incluyen las 40 combinaciones en validación y prueba y las predicciones utilizadas para estas figuras. Una buena estimación condicional puede coexistir con una cascada pobre: deben revisarse ambos errores.')
     text('Advertencias del ajuste: '+escape(json.dumps(audit.get('advertencias',[]),ensure_ascii=False)))
+    if bundle.get('baselines'):
+        text('Referencias simples','Heading2')
+        table(['Referencia','Bloque','n','MAE','R²'],[[r['modelo'],r['conjunto'],r['n'],f"{r['MAE']:.4f}",'No definido' if r['R2'] is None else f"{r['R2']:.4f}"] for r in bundle['baselines']],[130,100,60,100,100])
     def footer(canvas,doc):
         canvas.setFont('Helvetica',8);canvas.drawString(48,24,'Roya del café - versión propia - evaluación exploratoria');canvas.drawRightString(550,24,str(doc.page))
     SimpleDocTemplate(str(dest/'INFORME.pdf'),pagesize=A4,leftMargin=48,rightMargin=48,topMargin=38,bottomMargin=40).build(story,onFirstPage=footer,onLaterPages=footer)
